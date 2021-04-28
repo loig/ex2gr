@@ -58,6 +58,14 @@ var existPathMatrImage *ebiten.Image // should maybe be created only when needed
 var titleExistPathMatrAsset []byte
 var titleExistPathMatrImage *ebiten.Image // should maybe be created only when needed
 
+//go:embed assets/ex-existpathgraph.png
+var existPathGraphAsset []byte
+var existPathGraphImage *ebiten.Image // should maybe be created only when needed
+
+//go:embed assets/extitle-existpathgraph.png
+var titleExistPathGraphAsset []byte
+var titleExistPathGraphImage *ebiten.Image // should maybe be created only when needed
+
 const spriteSide int = 64
 
 func loadAssets() {
@@ -133,6 +141,18 @@ func loadAssets() {
 		log.Fatal(err)
 	}
 	titleExistPathMatrImage = ebiten.NewImageFromImage(decodedAsset)
+
+	decodedAsset, _, err = image.Decode(bytes.NewReader(existPathGraphAsset))
+	if err != nil {
+		log.Fatal(err)
+	}
+	existPathGraphImage = ebiten.NewImageFromImage(decodedAsset)
+
+	decodedAsset, _, err = image.Decode(bytes.NewReader(titleExistPathGraphAsset))
+	if err != nil {
+		log.Fatal(err)
+	}
+	titleExistPathGraphImage = ebiten.NewImageFromImage(decodedAsset)
 }
 
 // split the graphElementsImage
