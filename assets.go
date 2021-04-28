@@ -42,6 +42,14 @@ var ex1Image *ebiten.Image // should maybe be created only when needed
 var title1Asset []byte
 var title1Image *ebiten.Image // should maybe be created only when needed
 
+//go:embed assets/ex2.png
+var ex2Asset []byte
+var ex2Image *ebiten.Image // should maybe be created only when needed
+
+//go:embed assets/titreex2.png
+var title2Asset []byte
+var title2Image *ebiten.Image // should maybe be created only when needed
+
 const spriteSide int = 64
 
 func loadAssets() {
@@ -93,6 +101,18 @@ func loadAssets() {
 		log.Fatal(err)
 	}
 	title1Image = ebiten.NewImageFromImage(title1AssetDecoded)
+
+	ex2AssetDecoded, _, err := image.Decode(bytes.NewReader(ex2Asset))
+	if err != nil {
+		log.Fatal(err)
+	}
+	ex2Image = ebiten.NewImageFromImage(ex2AssetDecoded)
+
+	title2AssetDecoded, _, err := image.Decode(bytes.NewReader(title2Asset))
+	if err != nil {
+		log.Fatal(err)
+	}
+	title2Image = ebiten.NewImageFromImage(title2AssetDecoded)
 }
 
 // split the graphElementsImage
@@ -117,4 +137,6 @@ var (
 	buttonCenterSelectedSubimage   = image.Rect(7*spriteSide, 4*spriteSide, 8*spriteSide, 5*spriteSide)
 	buttonRightSubimage            = image.Rect(8*spriteSide, 4*spriteSide, 9*spriteSide, 5*spriteSide)
 	buttonRightSelectedSubimage    = image.Rect(9*spriteSide, 4*spriteSide, 10*spriteSide, 5*spriteSide)
+	undoneQuestionSubimage         = image.Rect(0, 5*spriteSide, spriteSide, 6*spriteSide)
+	doneQuestionSubimage           = image.Rect(spriteSide, 5*spriteSide, 2*spriteSide, 6*spriteSide)
 )
