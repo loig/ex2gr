@@ -29,7 +29,7 @@ func (g *game) init() {
 	g.goToNext.addButton((windowWidth-xshift)/2, 0, suivantImage)
 	g.onClicNextButton = -1
 	g.selectedNextButton = -1
-	g.e = initEx1()
+	g.e = initExistArcGraph()
 }
 
 func (g *game) reset() {
@@ -65,10 +65,12 @@ func (g *game) Update() error {
 				g.succesfulStrike = 0
 			}
 			switch currentID {
-			case 1:
-				g.e = initEx1()
-			case 2:
-				g.e = initEx2()
+			case existArcGraph:
+				g.e = initExistArcGraph()
+			case existArcMatr:
+				g.e = initExistArcMatr()
+			case existPathMatr:
+				g.e = initExistPathMatr()
 			}
 			g.reset()
 		}

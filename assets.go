@@ -50,6 +50,14 @@ var ex2Image *ebiten.Image // should maybe be created only when needed
 var title2Asset []byte
 var title2Image *ebiten.Image // should maybe be created only when needed
 
+//go:embed assets/ex-existpathmatr.png
+var existPathMatrAsset []byte
+var existPathMatrImage *ebiten.Image // should maybe be created only when needed
+
+//go:embed assets/extitle-existpathmatr.png
+var titleExistPathMatrAsset []byte
+var titleExistPathMatrImage *ebiten.Image // should maybe be created only when needed
+
 const spriteSide int = 64
 
 func loadAssets() {
@@ -113,6 +121,18 @@ func loadAssets() {
 		log.Fatal(err)
 	}
 	title2Image = ebiten.NewImageFromImage(title2AssetDecoded)
+
+	decodedAsset, _, err := image.Decode(bytes.NewReader(existPathMatrAsset))
+	if err != nil {
+		log.Fatal(err)
+	}
+	existPathMatrImage = ebiten.NewImageFromImage(decodedAsset)
+
+	decodedAsset, _, err = image.Decode(bytes.NewReader(titleExistPathMatrAsset))
+	if err != nil {
+		log.Fatal(err)
+	}
+	titleExistPathMatrImage = ebiten.NewImageFromImage(decodedAsset)
 }
 
 // split the graphElementsImage

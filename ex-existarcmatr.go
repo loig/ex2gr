@@ -7,16 +7,16 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
-func initEx1() (e exo) {
+func initExistArcMatr() (e exo) {
 
 	e.BasicSetup()
-	e.id = 1
+	e.id = existArcMatr
 	e.successRequired = 5
 
 	elementSpacing := 100
 
 	// title setup
-	e.titleImage = title1Image
+	e.titleImage = title2Image
 	xTitleShift, yTitleShift := e.titleImage.Size()
 	e.titleXPosition = (windowWidth - xTitleShift) / 2
 	e.titleYPosition = elementSpacing
@@ -26,26 +26,15 @@ func initEx1() (e exo) {
 	// graph setup
 	e.modifiableGraph = false
 	e.modifiableAdjMatr = false
-	e.displayGraph = true
-	e.displayAdjMatr = false
+	e.displayGraph = false
+	e.displayAdjMatr = true
 
 	e.g.genConnectedGraph(4, 4, 12)
 	e.g.linkMatrGraph = false
 
-	nodeSpacing := 300
-	e.g.xposition = (windowWidth - nodeSpacing) / 2
-	e.g.yposition = 2*elementSpacing + yTitleShift
-	e.g.xsize = nodeSpacing
-	e.g.ysize = nodeSpacing
-
-	e.g.nodes[0].loopPosition = loopTopLeft
-	e.g.nodes[1].xposition = nodeSpacing
-	e.g.nodes[1].loopPosition = loopTopRight
-	e.g.nodes[2].yposition = nodeSpacing
-	e.g.nodes[2].loopPosition = loopBottomLeft
-	e.g.nodes[3].xposition = nodeSpacing
-	e.g.nodes[3].yposition = nodeSpacing
-	e.g.nodes[3].loopPosition = loopBottomRight
+	matrixSize := 5 * matrixCellSize
+	e.g.xmatrposition = (windowWidth - matrixSize) / 2
+	e.g.ymatrposition = 2*elementSpacing + yTitleShift
 
 	// question setup
 	from := rand.Intn(4)
@@ -53,12 +42,12 @@ func initEx1() (e exo) {
 	if to == from {
 		to = 3
 	}
-	xshift, yshift := ex1Image.Size()
+	xshift, yshift := ex2Image.Size()
 	e.drawQuestion = func(screen *ebiten.Image) {
 		options := ebiten.DrawImageOptions{}
-		options.GeoM.Translate(float64((windowWidth-xshift)/2), float64(e.g.ysize+4*elementSpacing+yTitleShift))
+		options.GeoM.Translate(float64((windowWidth-xshift)/2), float64(matrixSize+3*elementSpacing+yTitleShift))
 		screen.DrawImage(
-			ex1Image,
+			ex2Image,
 			&options,
 		)
 		// from label
@@ -90,7 +79,7 @@ func initEx1() (e exo) {
 	// answers setup
 	e.hasAnswerSheet = true
 	answerSize := 128
-	e.answers.init((windowWidth-3*answerSize)/2, e.g.ysize+yshift+5*elementSpacing+yTitleShift)
+	e.answers.init((windowWidth-3*answerSize)/2, matrixSize+yshift+4*elementSpacing+yTitleShift)
 	e.answers.addButton(0, 0, ouiImage)
 	e.answers.addButton(2*answerSize, 0, nonImage)
 
