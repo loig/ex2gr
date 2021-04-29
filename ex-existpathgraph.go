@@ -96,7 +96,7 @@ func initExistPathGraph() (e exo) {
 	// answers setup
 	e.hasAnswerSheet = true
 	answerSize, _ := ouiImage.Size()
-	e.answers.init((windowWidth-3*answerSize)/2, e.g.ysize+yshift+5*elementSpacing+yTitleShift)
+	e.answers.init((windowWidth-3*answerSize)/2, e.g.ysize+yshift+4*elementSpacing+20+yTitleShift)
 	e.answers.addButton(0, 0, ouiImage)
 	e.answers.addButton(2*answerSize, 0, nonImage)
 

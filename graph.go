@@ -500,3 +500,11 @@ func (g *graph) clearMatr() {
 		}
 	}
 }
+
+func (g *graph) clearGraph() {
+	for i := 0; i < len(g.edges); i++ {
+		for j := 0; j < len(g.edges[i]); j++ {
+			g.edges[i][j] = 0
+		}
+	}
+}

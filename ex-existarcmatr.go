@@ -79,7 +79,7 @@ func initExistArcMatr() (e exo) {
 	// answers setup
 	e.hasAnswerSheet = true
 	answerSize, _ := ouiImage.Size()
-	e.answers.init((windowWidth-3*answerSize)/2, matrixSize+yshift+4*elementSpacing+yTitleShift)
+	e.answers.init((windowWidth-3*answerSize)/2, matrixSize+yshift+3*elementSpacing+20+yTitleShift)
 	e.answers.addButton(0, 0, ouiImage)
 	e.answers.addButton(2*answerSize, 0, nonImage)
 

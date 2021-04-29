@@ -6,4 +6,5 @@ const (
 	existPathGraph
 	existPathMatr
 	graphToMatr
+	matrToGraph
 )
