@@ -77,7 +77,7 @@ func initExistPathMatr() (e exo) {
 
 	// answers setup
 	e.hasAnswerSheet = true
-	answerSize := 128
+	answerSize, _ := ouiImage.Size()
 	e.answers.init((windowWidth-3*answerSize)/2, matrixSize+yshift+4*elementSpacing+yTitleShift)
 	e.answers.addButton(0, 0, ouiImage)
 	e.answers.addButton(2*answerSize, 0, nonImage)

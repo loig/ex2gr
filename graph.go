@@ -479,3 +479,24 @@ func (g *graph) drawMatrixCell(i, j int, screen *ebiten.Image) {
 	ebitenutil.DrawLine(screen, xRight, yBottom, xRight, yTop, col)
 	ebitenutil.DrawLine(screen, xRight, yTop, xLeft, yTop, col)
 }
+
+func (g *graph) checkGraphMatrEquality() bool {
+
+	for i := 0; i < len(g.edges); i++ {
+		for j := 0; j < len(g.edges[i]); j++ {
+			if i >= len(g.adjMatr) || j > len(g.adjMatr[i]) || g.adjMatr[i][j] != g.edges[i][j] {
+				return false
+			}
+		}
+	}
+
+	return true
+}
+
+func (g *graph) clearMatr() {
+	for i := 0; i < len(g.adjMatr); i++ {
+		for j := 0; j < len(g.adjMatr[i]); j++ {
+			g.adjMatr[i][j] = 0
+		}
+	}
+}

@@ -5,4 +5,5 @@ const (
 	existArcMatr
 	existPathGraph
 	existPathMatr
+	graphToMatr
 )

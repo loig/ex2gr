@@ -29,7 +29,7 @@ func (g *game) init() {
 	g.goToNext.addButton((windowWidth-xshift)/2, 0, suivantImage)
 	g.onClicNextButton = -1
 	g.selectedNextButton = -1
-	g.e = initExistPathGraph()
+	g.e = initGraphToMatr()
 }
 
 func (g *game) reset() {
@@ -73,6 +73,8 @@ func (g *game) Update() error {
 				g.e = initExistPathGraph()
 			case existPathMatr:
 				g.e = initExistPathMatr()
+			case graphToMatr:
+				g.e = initGraphToMatr()
 			}
 			g.reset()
 		}
