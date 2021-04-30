@@ -8,4 +8,5 @@ const (
 	matrToGraph
 	graphToMatr
 	isTreeGraph
+	isTreeMatr
 )

@@ -1,6 +1,9 @@
 package main
 
-import "math/rand"
+import (
+	"log"
+	"math/rand"
+)
 
 // Build a connected graph and returns it
 // the graph and the adjacency matrix are linked
@@ -121,23 +124,52 @@ func (g *graph) genTree(numNodes int) {
 // which is not a tree, but almost
 func (g *graph) demakeTree() {
 
-	numEdges := len(g.edges) - 1
-	numMissingEdges := len(g.edges)*len(g.edges) - numEdges
+	numNodes := len(g.edges)
+
+	// find the root
+	root := -1
+	for j := 0; root < 0; j++ {
+		inEdges := 0
+		for i := 0; i < numNodes; i++ {
+			if g.edges[i][j] > 0 {
+				inEdges++
+			}
+		}
+		if inEdges == 0 {
+			root = j
+		}
+	}
+
+	log.Print("Root: ", root)
+
+	// count edges going out of root
+	outRoot := 0
+	for j := 0; j < numNodes; j++ {
+		if g.edges[root][j] > 0 {
+			outRoot++
+		}
+	}
+
+	numEdges := numNodes - 1
+	numReversableEdges := numEdges - outRoot
+	numMissingEdges := numNodes*numNodes - numEdges
 
 	g.linkMatrGraph = true
 
 	// either reverse an edge or add an edge
-	if rand.Intn(2) == 0 {
+	if rand.Intn(2) == 0 && numReversableEdges > 0 {
 		// reverse
-		edgeNum := rand.Intn(numEdges) + 1
+		edgeNum := rand.Intn(numReversableEdges) + 1
 		for i := 0; i < len(g.edges); i++ {
-			for j := 0; j < len(g.edges[i]); j++ {
-				if g.edges[i][j] > 0 {
-					edgeNum--
-					if edgeNum <= 0 {
-						g.edges[i][j] = 0
-						g.edges[j][i] = 1
-						return
+			if i != root {
+				for j := 0; j < len(g.edges[i]); j++ {
+					if g.edges[i][j] > 0 {
+						edgeNum--
+						if edgeNum <= 0 {
+							g.removeEdge(i, j)
+							g.addEdge(j, i)
+							return
+						}
 					}
 				}
 			}
@@ -150,7 +182,7 @@ func (g *graph) demakeTree() {
 				if g.edges[i][j] <= 0 {
 					edgeNum--
 					if edgeNum <= 0 {
-						g.edges[i][j] = 1
+						g.addEdge(i, j)
 						return
 					}
 				}

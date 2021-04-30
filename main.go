@@ -29,7 +29,7 @@ func (g *game) init() {
 	g.goToNext.addButton((windowWidth-xshift)/2, 0, suivantImage)
 	g.onClicNextButton = -1
 	g.selectedNextButton = -1
-	g.e = initIsTreeGraph()
+	g.e = initIsTreeMatr()
 }
 
 func (g *game) reset() {
@@ -79,6 +79,8 @@ func (g *game) Update() error {
 				g.e = initMatrToGraph()
 			case isTreeGraph:
 				g.e = initIsTreeGraph()
+			case isTreeMatr:
+				g.e = initIsTreeMatr()
 			}
 			g.reset()
 		}
