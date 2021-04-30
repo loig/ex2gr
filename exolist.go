@@ -7,4 +7,5 @@ const (
 	existPathMatr
 	matrToGraph
 	graphToMatr
+	isTreeGraph
 )

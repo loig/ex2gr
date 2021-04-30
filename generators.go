@@ -87,3 +87,75 @@ func (g *graph) makeEmptyGraph(numNodes int) {
 		g.adjMatr[i] = make([]int, numNodes)
 	}
 }
+
+// Build a tree and returns it
+// the graph and the adjacency matrix are linked
+// don't care about positions
+func (g *graph) genTree(numNodes int) {
+
+	g.makeEmptyGraph(numNodes)
+	g.linkMatrGraph = true
+
+	notConnectedNodes := make([]int, numNodes)
+	for i := range notConnectedNodes {
+		notConnectedNodes[i] = i
+	}
+	rand.Shuffle(numNodes, func(i, j int) {
+		notConnectedNodes[i], notConnectedNodes[j] = notConnectedNodes[j], notConnectedNodes[i]
+	})
+
+	g.addEdge(notConnectedNodes[0], notConnectedNodes[1])
+	for i := 2; i < numNodes; i++ {
+		currentNode := rand.Intn(i)
+		g.addEdge(notConnectedNodes[currentNode], notConnectedNodes[i])
+	}
+
+	// Prepare draw order
+	g.nodesDrawOrder = make([]int, numNodes)
+	for i := range g.nodesDrawOrder {
+		g.nodesDrawOrder[i] = i
+	}
+}
+
+// Transform a tree into a graph
+// which is not a tree, but almost
+func (g *graph) demakeTree() {
+
+	numEdges := len(g.edges) - 1
+	numMissingEdges := len(g.edges)*len(g.edges) - numEdges
+
+	g.linkMatrGraph = true
+
+	// either reverse an edge or add an edge
+	if rand.Intn(2) == 0 {
+		// reverse
+		edgeNum := rand.Intn(numEdges) + 1
+		for i := 0; i < len(g.edges); i++ {
+			for j := 0; j < len(g.edges[i]); j++ {
+				if g.edges[i][j] > 0 {
+					edgeNum--
+					if edgeNum <= 0 {
+						g.edges[i][j] = 0
+						g.edges[j][i] = 1
+						return
+					}
+				}
+			}
+		}
+	} else {
+		// add
+		edgeNum := rand.Intn(numMissingEdges) + 1
+		for i := 0; i < len(g.edges); i++ {
+			for j := 0; j < len(g.edges[i]); j++ {
+				if g.edges[i][j] <= 0 {
+					edgeNum--
+					if edgeNum <= 0 {
+						g.edges[i][j] = 1
+						return
+					}
+				}
+			}
+		}
+	}
+
+}
