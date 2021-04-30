@@ -29,7 +29,7 @@ func initExistArcGraph() (e exo) {
 	e.displayGraph = true
 	e.displayAdjMatr = false
 
-	e.g.genConnectedGraph(4, 4, 12)
+	e.g.genConnectedGraph(4, 4, 12, -1, -1)
 	e.g.linkMatrGraph = false
 
 	nodeSpacing := 300

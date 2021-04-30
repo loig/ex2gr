@@ -28,7 +28,7 @@ func initMatrToGraph() (e exo) {
 	e.displayGraph = true
 	e.displayAdjMatr = true
 
-	e.g.genConnectedGraph(4, 4, 12)
+	e.g.genConnectedGraph(4, 4, 8, -1, -1)
 	e.g.linkMatrGraph = false
 	e.g.clearGraph()
 

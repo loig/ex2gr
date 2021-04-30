@@ -5,7 +5,8 @@ import "math/rand"
 // Build a connected graph and returns it
 // the graph and the adjacency matrix are linked
 // don't care about positions
-func (g *graph) genConnectedGraph(numNodes, minEdges, maxEdges int) {
+// forbids edge (from, to)
+func (g *graph) genConnectedGraph(numNodes, minEdges, maxEdges, noFrom, noTo int) {
 	if minEdges < numNodes-1 {
 		minEdges = numNodes - 1
 	}
@@ -22,26 +23,29 @@ func (g *graph) genConnectedGraph(numNodes, minEdges, maxEdges int) {
 		notConnectedNodes[i], notConnectedNodes[j] = notConnectedNodes[j], notConnectedNodes[i]
 	})
 
-	g.addEdge(notConnectedNodes[0], notConnectedNodes[1])
-	currentNode := rand.Intn(2)
-	nodeOrder := rand.Intn(2)
-	if nodeOrder == 0 {
-		g.addEdge(notConnectedNodes[currentNode], notConnectedNodes[2])
+	if notConnectedNodes[0] != noFrom || notConnectedNodes[1] != noTo {
+		g.addEdge(notConnectedNodes[0], notConnectedNodes[1])
 	} else {
-		g.addEdge(notConnectedNodes[2], notConnectedNodes[currentNode])
+		g.addEdge(notConnectedNodes[1], notConnectedNodes[0])
 	}
-	currentNode = rand.Intn(3)
-	nodeOrder = rand.Intn(2)
-	if nodeOrder == 0 {
-		g.addEdge(notConnectedNodes[currentNode], notConnectedNodes[3])
-	} else {
-		g.addEdge(notConnectedNodes[3], notConnectedNodes[currentNode])
+	for i := 2; i < numNodes; i++ {
+		currentNode := rand.Intn(i)
+		nodeOrder := rand.Intn(2)
+		if (nodeOrder == 0 && (notConnectedNodes[currentNode] != noFrom || notConnectedNodes[i] != noTo)) ||
+			(notConnectedNodes[i] == noFrom && notConnectedNodes[currentNode] == noTo) {
+			g.addEdge(notConnectedNodes[currentNode], notConnectedNodes[i])
+		} else {
+			g.addEdge(notConnectedNodes[i], notConnectedNodes[currentNode])
+		}
 	}
 
 	// Add a few more edges if needed
 	edgesAdded := numNodes - 1
 	edgesNeeded := rand.Intn(maxEdges-minEdges+1) + minEdges - edgesAdded
 	edgesPossible := numNodes*numNodes - edgesAdded
+	if noFrom >= 0 && noTo >= 0 {
+		edgesPossible--
+	}
 	if edgesNeeded > edgesPossible {
 		edgesNeeded = edgesPossible
 	}
@@ -50,7 +54,7 @@ func (g *graph) genConnectedGraph(numNodes, minEdges, maxEdges int) {
 	edgesLoop:
 		for i := range g.edges {
 			for j, v := range g.edges[i] {
-				if v == 0 {
+				if v == 0 && (i != noFrom || j != noTo) {
 					nextEdgeNumber--
 					if nextEdgeNumber == 0 {
 						g.addEdge(i, j)

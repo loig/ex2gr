@@ -22,25 +22,28 @@ func initExistPathMatr() (e exo) {
 	e.titleYPosition = elementSpacing
 	e.successCounterY = elementSpacing + yTitleShift
 
-	// graph setup
+	// graph setup part 1
 	e.modifiableGraph = false
 	e.modifiableAdjMatr = false
 	e.displayGraph = false
 	e.displayAdjMatr = true
 
-	e.g.genConnectedGraph(6, 10, 20)
+	// question setup part 1
+	from := rand.Intn(5)
+	to := rand.Intn(4)
+	if to == from {
+		to = 4
+	}
+
+	// graph setup part 2
+	e.g.genConnectedGraph(5, 7, 10, from, to)
 	e.g.linkMatrGraph = false
 
 	matrixSize := 7 * matrixCellSize
 	e.g.xmatrposition = (windowWidth - matrixSize) / 2
 	e.g.ymatrposition = 2*elementSpacing + yTitleShift
 
-	// question setup
-	from := rand.Intn(6)
-	to := rand.Intn(5)
-	if to == from {
-		to = 5
-	}
+	// question setup part 2
 	xshift, yshift := existPathMatrImage.Size()
 	e.drawQuestion = func(screen *ebiten.Image) {
 		options := ebiten.DrawImageOptions{}

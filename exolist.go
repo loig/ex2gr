@@ -5,6 +5,6 @@ const (
 	existArcMatr
 	existPathGraph
 	existPathMatr
-	graphToMatr
 	matrToGraph
+	graphToMatr
 )

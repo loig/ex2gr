@@ -23,13 +23,21 @@ func initExistPathGraph() (e exo) {
 	e.successCounterY = elementSpacing + yTitleShift
 	yTitleShift += spriteSide
 
-	// graph setup
+	// graph setup part 1
 	e.modifiableGraph = false
 	e.modifiableAdjMatr = false
 	e.displayGraph = true
 	e.displayAdjMatr = false
 
-	e.g.genConnectedGraph(6, 10, 20)
+	// question setup part 1
+	from := rand.Intn(6)
+	to := rand.Intn(5)
+	if to == from {
+		to = 5
+	}
+
+	// graph setup part 2
+	e.g.genConnectedGraph(6, 8, 12, from, to)
 	e.g.linkMatrGraph = false
 
 	nodeSpacing := 300
@@ -53,12 +61,7 @@ func initExistPathGraph() (e exo) {
 	e.g.nodes[5].yposition = nodeSpacing
 	e.g.nodes[5].loopPosition = loopBottomRight
 
-	// question setup
-	from := rand.Intn(6)
-	to := rand.Intn(5)
-	if to == from {
-		to = 5
-	}
+	// question setup part 2
 	xshift, yshift := existPathGraphImage.Size()
 	e.drawQuestion = func(screen *ebiten.Image) {
 		options := ebiten.DrawImageOptions{}

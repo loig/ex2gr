@@ -29,7 +29,7 @@ func initExistArcMatr() (e exo) {
 	e.displayGraph = false
 	e.displayAdjMatr = true
 
-	e.g.genConnectedGraph(4, 4, 12)
+	e.g.genConnectedGraph(4, 4, 12, -1, -1)
 	e.g.linkMatrGraph = false
 
 	matrixSize := 5 * matrixCellSize
