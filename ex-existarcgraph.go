@@ -7,7 +7,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
-func initExistArcGraph() (e exo) {
+func initExistArcGraph(correction bool, graphCode, questionCode int) (e exo, gCode, qCode int) {
 
 	e.BasicSetup()
 	e.id = existArcGraph
@@ -29,7 +29,13 @@ func initExistArcGraph() (e exo) {
 	e.displayGraph = true
 	e.displayAdjMatr = false
 
-	e.g.genConnectedGraph(4, 4, 12, -1, -1)
+	if correction {
+		e.g.decode(graphCode, 4)
+		gCode = graphCode
+	} else {
+		e.g.genConnectedGraph(4, 4, 12, -1, -1)
+		gCode = e.g.encode()
+	}
 	e.g.linkMatrGraph = false
 
 	nodeSpacing := 300
@@ -48,10 +54,17 @@ func initExistArcGraph() (e exo) {
 	e.g.nodes[3].loopPosition = loopBottomRight
 
 	// question setup
-	from := rand.Intn(4)
-	to := rand.Intn(3)
-	if to == from {
-		to = 3
+	var from, to int
+	if correction {
+		from, to = decodeFromToQuestion(questionCode, 4)
+		qCode = questionCode
+	} else {
+		from = rand.Intn(4)
+		to = rand.Intn(3)
+		if to == from {
+			to = 3
+		}
+		qCode = encodeFromToQuestion(from, to, 4)
 	}
 	xshift, yshift := ex1Image.Size()
 	e.drawQuestion = func(screen *ebiten.Image) {
@@ -104,5 +117,5 @@ func initExistArcGraph() (e exo) {
 	}
 
 	// return exercise
-	return e
+	return e, gCode, qCode
 }

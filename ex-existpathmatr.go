@@ -7,7 +7,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
-func initExistPathMatr() (e exo) {
+func initExistPathMatr(correction bool, graphCode, questionCode int) (e exo, gCode, qCode int) {
 
 	e.BasicSetup()
 	e.id = existPathMatr
@@ -29,14 +29,27 @@ func initExistPathMatr() (e exo) {
 	e.displayAdjMatr = true
 
 	// question setup part 1
-	from := rand.Intn(5)
-	to := rand.Intn(4)
-	if to == from {
-		to = 4
+	var from, to int
+	if correction {
+		from, to = decodeFromToQuestion(questionCode, 4)
+		qCode = questionCode
+	} else {
+		from = rand.Intn(5)
+		to = rand.Intn(4)
+		if to == from {
+			to = 4
+		}
+		qCode = encodeFromToQuestion(from, to, 4)
 	}
 
 	// graph setup part 2
-	e.g.genConnectedGraph(5, 7, 10, from, to)
+	if correction {
+		e.g.decode(graphCode, 5)
+		gCode = graphCode
+	} else {
+		e.g.genConnectedGraph(5, 7, 10, from, to)
+		gCode = e.g.encode()
+	}
 	e.g.linkMatrGraph = false
 
 	matrixSize := 7 * matrixCellSize
@@ -95,5 +108,5 @@ func initExistPathMatr() (e exo) {
 	}
 
 	// return exercise
-	return e
+	return e, gCode, qCode
 }

@@ -6,7 +6,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
-func initGraphToMatr() (e exo) {
+func initGraphToMatr(correction bool, graphCode int) (e exo, gCode int) {
 
 	e.BasicSetup()
 	e.id = graphToMatr
@@ -28,7 +28,13 @@ func initGraphToMatr() (e exo) {
 	e.displayGraph = true
 	e.displayAdjMatr = true
 
-	e.g.genConnectedGraph(4, 4, 12, -1, -1)
+	if correction {
+		e.g.decode(graphCode, 4)
+		gCode = graphCode
+	} else {
+		e.g.genConnectedGraph(4, 4, 12, -1, -1)
+		gCode = e.g.encode()
+	}
 	e.g.linkMatrGraph = false
 	e.g.clearMatr()
 
@@ -79,5 +85,5 @@ func initGraphToMatr() (e exo) {
 	}
 
 	// return exercise
-	return e
+	return e, gCode
 }

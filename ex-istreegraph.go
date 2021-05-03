@@ -6,7 +6,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
-func initIsTreeGraph() (e exo) {
+func initIsTreeGraph(correction bool, graphCode int) (e exo, gCode int) {
 
 	e.BasicSetup()
 	e.id = isTreeGraph
@@ -29,10 +29,17 @@ func initIsTreeGraph() (e exo) {
 	e.displayAdjMatr = false
 
 	isTree := true
-	e.g.genTree(6)
-	if rand.Intn(2) == 0 {
-		e.g.demakeTree()
-		isTree = false
+	if correction {
+		e.g.decode(graphCode, 6)
+		gCode = graphCode
+		// todo savoir si c'est un arbre (probablement via le transfert de la question)
+	} else {
+		e.g.genTree(6)
+		if rand.Intn(2) == 0 {
+			e.g.demakeTree()
+			isTree = false
+		}
+		gCode = e.g.encode()
 	}
 	e.g.linkMatrGraph = false
 
@@ -79,5 +86,5 @@ func initIsTreeGraph() (e exo) {
 	}
 
 	// return exercise
-	return e
+	return e, gCode
 }

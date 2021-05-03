@@ -7,7 +7,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
-func initExistArcMatr() (e exo) {
+func initExistArcMatr(correction bool, graphCode, questionCode int) (e exo, gCode, qCode int) {
 
 	e.BasicSetup()
 	e.id = existArcMatr
@@ -29,7 +29,13 @@ func initExistArcMatr() (e exo) {
 	e.displayGraph = false
 	e.displayAdjMatr = true
 
-	e.g.genConnectedGraph(4, 4, 12, -1, -1)
+	if correction {
+		e.g.decode(graphCode, 4)
+		gCode = graphCode
+	} else {
+		e.g.genConnectedGraph(4, 4, 12, -1, -1)
+		gCode = e.g.encode()
+	}
 	e.g.linkMatrGraph = false
 
 	matrixSize := 5 * matrixCellSize
@@ -37,10 +43,17 @@ func initExistArcMatr() (e exo) {
 	e.g.ymatrposition = 2*elementSpacing + yTitleShift
 
 	// question setup
-	from := rand.Intn(4)
-	to := rand.Intn(3)
-	if to == from {
-		to = 3
+	var from, to int
+	if correction {
+		from, to = decodeFromToQuestion(questionCode, 4)
+		qCode = questionCode
+	} else {
+		from = rand.Intn(4)
+		to = rand.Intn(3)
+		if to == from {
+			to = 3
+		}
+		qCode = encodeFromToQuestion(from, to, 4)
 	}
 	xshift, yshift := ex2Image.Size()
 	e.drawQuestion = func(screen *ebiten.Image) {
@@ -93,5 +106,5 @@ func initExistArcMatr() (e exo) {
 	}
 
 	// return exercise
-	return e
+	return e, gCode, qCode
 }
