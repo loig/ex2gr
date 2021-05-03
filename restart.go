@@ -15,7 +15,7 @@ type stateDescription struct {
 }
 
 func (s *stateDescription) encode() string {
-	return fmt.Sprintf("%x.%x.%x.%x", s.numExo, s.descriptionExo, s.descriptionQuestion, s.answer)
+	return fmt.Sprintf("%x.%x.%x.%x", s.numExo, s.descriptionExo, s.descriptionQuestion, s.answer+1)
 }
 
 func (s *stateDescription) decode(code string) {
@@ -42,7 +42,7 @@ func (s *stateDescription) decode(code string) {
 	s.numExo = int(numExo)
 	s.descriptionExo = int(descriptionExo)
 	s.descriptionQuestion = int(question)
-	s.answer = int(answer)
+	s.answer = int(answer) - 1
 }
 
 func (g *graph) encode() int {
@@ -50,6 +50,16 @@ func (g *graph) encode() int {
 	for i := 0; i < len(g.edges); i++ {
 		for j := 0; j < len(g.edges[0]); j++ {
 			code = 2*code + g.edges[i][j]
+		}
+	}
+	return code
+}
+
+func (g *graph) encodeMatr() int {
+	code := 0
+	for i := 0; i < len(g.adjMatr); i++ {
+		for j := 0; j < len(g.adjMatr[0]); j++ {
+			code = 2*code + g.adjMatr[i][j]
 		}
 	}
 	return code
@@ -71,6 +81,30 @@ func (g *graph) decode(code int, numNodes int) {
 	g.nodesDrawOrder = make([]int, numNodes)
 	for i := range g.nodesDrawOrder {
 		g.nodesDrawOrder[i] = i
+	}
+}
+
+func (g *graph) decodeGraph(code int, numNodes int) {
+	for i := len(g.edges) - 1; i >= 0; i-- {
+		for j := len(g.edges) - 1; j >= 0; j-- {
+			g.edges[i][j] = code % 2
+			code = code / 2
+		}
+	}
+
+	// Prepare draw order
+	g.nodesDrawOrder = make([]int, numNodes)
+	for i := range g.nodesDrawOrder {
+		g.nodesDrawOrder[i] = i
+	}
+}
+
+func (g *graph) decodeMatr(code int, numNodes int) {
+	for i := len(g.edges) - 1; i >= 0; i-- {
+		for j := len(g.edges) - 1; j >= 0; j-- {
+			g.adjMatr[i][j] = code % 2
+			code = code / 2
+		}
 	}
 }
 

@@ -6,7 +6,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
-func initGraphToMatr(correction bool, graphCode int) (e exo, gCode int) {
+func initGraphToMatr(correction bool, graphCode, answerCode int) (e exo, gCode int) {
 
 	e.BasicSetup()
 	e.id = graphToMatr
@@ -37,6 +37,9 @@ func initGraphToMatr(correction bool, graphCode int) (e exo, gCode int) {
 	}
 	e.g.linkMatrGraph = false
 	e.g.clearMatr()
+	if correction {
+		e.g.decodeMatr(answerCode, 4)
+	}
 
 	nodeSpacing := 300
 	e.g.xposition = (windowWidth/2 - nodeSpacing) / 2
@@ -82,6 +85,10 @@ func initGraphToMatr(correction bool, graphCode int) (e exo, gCode int) {
 
 	e.checkResult = func() (bool, bool) {
 		return e.g.checkGraphMatrEquality(), e.answers.clics[0] >= 1
+	}
+
+	e.codeAnswer = func() int {
+		return e.g.encodeMatr()
 	}
 
 	// return exercise

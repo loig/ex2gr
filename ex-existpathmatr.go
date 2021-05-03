@@ -7,7 +7,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
-func initExistPathMatr(correction bool, graphCode, questionCode int) (e exo, gCode, qCode int) {
+func initExistPathMatr(correction bool, graphCode, questionCode, answerCode int) (e exo, gCode, qCode int) {
 
 	e.BasicSetup()
 	e.id = existPathMatr
@@ -103,8 +103,21 @@ func initExistPathMatr(correction bool, graphCode, questionCode int) (e exo, gCo
 		answer = 0
 	}
 
+	if correction {
+		if answerCode < len(e.answers.clics) && answerCode >= 0 {
+			e.answers.clics[answerCode] = 1
+		}
+	}
+
 	e.checkResult = func() (bool, bool) {
 		return e.answers.clics[answer] >= 1, e.answers.clics[0]+e.answers.clics[1] >= 1
+	}
+
+	e.codeAnswer = func() int {
+		if e.answers.clics[0] >= 1 {
+			return 0
+		}
+		return 1
 	}
 
 	// return exercise

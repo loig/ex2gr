@@ -32,6 +32,7 @@ type exo struct {
 	id                int
 	successRequired   int
 	successCounterY   int
+	codeAnswer        func() int
 }
 
 func (e *exo) BasicSetup() {
@@ -174,7 +175,7 @@ func (e *exo) draw(screen *ebiten.Image, correction bool) {
 	e.drawQuestion(screen)
 
 	// answers
-	if !correction && e.hasAnswerSheet {
+	if e.hasAnswerSheet {
 		e.answers.draw(screen, e.selectedButton)
 	}
 

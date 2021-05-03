@@ -6,7 +6,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
-func initIsTreeGraph(correction bool, graphCode int) (e exo, gCode int) {
+func initIsTreeGraph(correction bool, graphCode, answerCode int) (e exo, gCode int) {
 
 	e.BasicSetup()
 	e.id = isTreeGraph
@@ -81,8 +81,21 @@ func initIsTreeGraph(correction bool, graphCode int) (e exo, gCode int) {
 		answer = 0
 	}
 
+	if correction {
+		if answerCode < len(e.answers.clics) && answerCode >= 0 {
+			e.answers.clics[answerCode] = 1
+		}
+	}
+
 	e.checkResult = func() (bool, bool) {
 		return e.answers.clics[answer] >= 1, e.answers.clics[0]+e.answers.clics[1] >= 1
+	}
+
+	e.codeAnswer = func() int {
+		if e.answers.clics[0] >= 1 {
+			return 0
+		}
+		return 1
 	}
 
 	// return exercise

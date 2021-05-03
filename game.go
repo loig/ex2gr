@@ -2,6 +2,7 @@ package main
 
 import (
 	"image/color"
+	"log"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
@@ -30,7 +31,7 @@ func (g *game) init(code string) {
 		g.exState.decode(code)
 		g.initExo(g.exState.numExo)
 	} else {
-		g.initExo(existArcGraph)
+		g.initExo(matrToGraph)
 	}
 }
 
@@ -54,6 +55,8 @@ func (g *game) Update() error {
 		g.e.update(x, y, false)
 		if g.e.done {
 			g.exoDone = true
+			g.exState.answer = g.e.codeAnswer()
+			log.Print(g.exState.encode())
 			if g.e.correct {
 				g.succesfulStrike++
 				g.goToNext.aboveText = bravoImage
