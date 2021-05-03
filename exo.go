@@ -45,17 +45,17 @@ func (e *exo) BasicSetup() {
 	e.selectedButton = -1
 }
 
-func (e *exo) update(x, y int) {
+func (e *exo) update(x, y int, correction bool) {
 
-	if !e.done {
+	if !correction && !e.done {
 		e.correct, e.done = e.checkResult()
 	}
 
-	if e.done {
+	if !correction && e.done {
 		return
 	}
 
-	if e.hasAnswerSheet {
+	if !correction && e.hasAnswerSheet {
 		e.selectedButton = e.answers.selectButton(x, y)
 		if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
 			e.onClicButton = e.selectedButton
@@ -92,7 +92,7 @@ func (e *exo) update(x, y int) {
 		}
 
 		edgeI, edgeJ := e.g.selectEdge(x, y)
-		if e.modifiableGraph {
+		if !correction && e.modifiableGraph {
 
 			if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
 				if nodeID >= 0 {
@@ -138,7 +138,7 @@ func (e *exo) update(x, y int) {
 		// matrix
 		e.selectedCellI, e.selectedCellJ = e.g.selectMatrixCell(x, y)
 
-		if e.modifiableAdjMatr {
+		if !correction && e.modifiableAdjMatr {
 			if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
 				if e.selectedCellI >= 0 && e.selectedCellJ >= 0 {
 					e.g.updateMatrixCell(e.selectedCellI, e.selectedCellJ)
@@ -149,13 +149,13 @@ func (e *exo) update(x, y int) {
 
 }
 
-func (e *exo) draw(screen *ebiten.Image) {
+func (e *exo) draw(screen *ebiten.Image, correction bool) {
 
 	// title
 	e.drawTitle(screen)
 
 	// graph
-	if e.modifiableGraph && e.displayGraph {
+	if !correction && e.modifiableGraph && e.displayGraph {
 		if e.nodeFrom >= 0 {
 			x, y := ebiten.CursorPosition()
 			e.g.drawEdge(e.nodeFrom, x-e.g.xposition, y-e.g.yposition, screen, true, e.nodeAbove == e.nodeFrom, e.nodeAbove)
@@ -174,7 +174,7 @@ func (e *exo) draw(screen *ebiten.Image) {
 	e.drawQuestion(screen)
 
 	// answers
-	if e.hasAnswerSheet {
+	if !correction && e.hasAnswerSheet {
 		e.answers.draw(screen, e.selectedButton)
 	}
 

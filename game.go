@@ -44,8 +44,14 @@ func (g *game) reset() {
 
 func (g *game) Update() error {
 	x, y := ebiten.CursorPosition()
+
+	if g.correctionMode {
+		g.e.update(x, y, true)
+		return nil
+	}
+
 	if !g.exoDone {
-		g.e.update(x, y)
+		g.e.update(x, y, false)
 		if g.e.done {
 			g.exoDone = true
 			if g.e.correct {
@@ -87,12 +93,15 @@ func (g *game) Update() error {
 func (g *game) Draw(screen *ebiten.Image) {
 	screen.Fill(color.White)
 
-	g.e.draw(screen)
-	g.drawSuccessCounter(screen)
+	g.e.draw(screen, g.correctionMode)
 
-	// next exo
-	if g.exoDone {
-		g.goToNext.draw(screen, g.selectedNextButton)
+	if !g.correctionMode {
+		g.drawSuccessCounter(screen)
+
+		// next exo
+		if g.exoDone {
+			g.goToNext.draw(screen, g.selectedNextButton)
+		}
 	}
 }
 
