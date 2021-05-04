@@ -7,10 +7,10 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
-func initExistPathMatr(correction bool, graphCode, questionCode, answerCode int) (e exo, gCode, qCode int) {
+func initExistCycleMatr(correction bool, graphCode, questionCode, answerCode int) (e exo, gCode, qCode int) {
 
 	e.BasicSetup()
-	e.id = existPathMatr
+	e.id = existCycleMatr
 	e.successRequired = 5
 
 	numNodes := 5
@@ -18,7 +18,7 @@ func initExistPathMatr(correction bool, graphCode, questionCode, answerCode int)
 	elementSpacing := 100
 
 	// title setup
-	e.titleImage = titleExistPathMatrImage
+	e.titleImage = titleExistCycleMatrImage
 	xTitleShift, yTitleShift := e.titleImage.Size()
 	e.titleXPosition = (windowWidth - xTitleShift) / 2
 	e.titleYPosition = elementSpacing
@@ -31,17 +31,13 @@ func initExistPathMatr(correction bool, graphCode, questionCode, answerCode int)
 	e.displayAdjMatr = true
 
 	// question setup part 1
-	var from, to int
+	var from int
 	if correction {
-		from, to = decodeFromToQuestion(questionCode, numNodes)
+		from, _ = decodeFromToQuestion(questionCode, numNodes)
 		qCode = questionCode
 	} else {
 		from = rand.Intn(numNodes)
-		to = rand.Intn(numNodes-1)
-		if to == from {
-			to = numNodes-1
-		}
-		qCode = encodeFromToQuestion(from, to, numNodes)
+		qCode = encodeFromToQuestion(from, from, numNodes)
 	}
 
 	// graph setup part 2
@@ -49,7 +45,7 @@ func initExistPathMatr(correction bool, graphCode, questionCode, answerCode int)
 		e.g.decode(graphCode, numNodes)
 		gCode = graphCode
 	} else {
-		e.g.genConnectedGraph(numNodes, 7, 10, from, to)
+		e.g.genConnectedGraph(numNodes, 7, 10, from, from)
 		gCode = e.g.encode()
 	}
 	e.g.linkMatrGraph = false
@@ -59,31 +55,19 @@ func initExistPathMatr(correction bool, graphCode, questionCode, answerCode int)
 	e.g.ymatrposition = 2*elementSpacing + yTitleShift
 
 	// question setup part 2
-	xshift, yshift := existPathMatrImage.Size()
+	xshift, yshift := existCycleMatrImage.Size()
 	e.drawQuestion = func(screen *ebiten.Image) {
 		options := ebiten.DrawImageOptions{}
 		options.GeoM.Translate(float64((windowWidth-xshift)/2), float64(matrixSize+3*elementSpacing+yTitleShift))
 		screen.DrawImage(
-			existPathMatrImage,
+			existCycleMatrImage,
 			&options,
 		)
 		// from label
-		options.GeoM.Translate(float64(8*spriteSide), 0)
+		options.GeoM.Translate(float64(9*spriteSide+8), 8)
 		xLabel := from % 10
 		yLabel := from / 10
 		labelSubimage := image.Rect(
-			xLabel*spriteSide, (yLabel+1)*spriteSide,
-			(xLabel+1)*spriteSide, (yLabel+2)*spriteSide,
-		)
-		screen.DrawImage(
-			graphElementsImage.SubImage(labelSubimage).(*ebiten.Image),
-			&options,
-		)
-		// to label
-		options.GeoM.Translate(float64(spriteSide+15), 0)
-		xLabel = to % 10
-		yLabel = to / 10
-		labelSubimage = image.Rect(
 			xLabel*spriteSide, (yLabel+1)*spriteSide,
 			(xLabel+1)*spriteSide, (yLabel+2)*spriteSide,
 		)
@@ -101,7 +85,7 @@ func initExistPathMatr(correction bool, graphCode, questionCode, answerCode int)
 	e.answers.addButton(2*answerSize, 0, nonImage)
 
 	answer := 1
-	if e.g.existPath(from, to) {
+	if e.g.existCycle(from) {
 		answer = 0
 	}
 

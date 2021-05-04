@@ -13,6 +13,8 @@ func initExistArcGraph(correction bool, graphCode, questionCode, answerCode int)
 	e.id = existArcGraph
 	e.successRequired = 5
 
+	numNodes := 4
+
 	elementSpacing := 100
 
 	// title setup
@@ -30,10 +32,10 @@ func initExistArcGraph(correction bool, graphCode, questionCode, answerCode int)
 	e.displayAdjMatr = false
 
 	if correction {
-		e.g.decode(graphCode, 4)
+		e.g.decode(graphCode, numNodes)
 		gCode = graphCode
 	} else {
-		e.g.genConnectedGraph(4, 4, 12, -1, -1)
+		e.g.genConnectedGraph(numNodes, 4, 12, -1, -1)
 		gCode = e.g.encode()
 	}
 	e.g.linkMatrGraph = false
@@ -56,15 +58,15 @@ func initExistArcGraph(correction bool, graphCode, questionCode, answerCode int)
 	// question setup
 	var from, to int
 	if correction {
-		from, to = decodeFromToQuestion(questionCode, 4)
+		from, to = decodeFromToQuestion(questionCode, numNodes)
 		qCode = questionCode
 	} else {
-		from = rand.Intn(4)
-		to = rand.Intn(3)
+		from = rand.Intn(numNodes)
+		to = rand.Intn(numNodes-1)
 		if to == from {
-			to = 3
+			to = numNodes-1
 		}
-		qCode = encodeFromToQuestion(from, to, 4)
+		qCode = encodeFromToQuestion(from, to, numNodes)
 	}
 	xshift, yshift := ex1Image.Size()
 	e.drawQuestion = func(screen *ebiten.Image) {

@@ -1,8 +1,6 @@
 package main
 
 import (
-	"math/rand"
-
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
@@ -11,6 +9,8 @@ func initGraphToMatr(correction bool, graphCode, answerCode int) (e exo, gCode i
 	e.BasicSetup()
 	e.id = graphToMatr
 	e.successRequired = 5
+
+	numNodes := 4
 
 	elementSpacing := 100
 
@@ -29,16 +29,16 @@ func initGraphToMatr(correction bool, graphCode, answerCode int) (e exo, gCode i
 	e.displayAdjMatr = true
 
 	if correction {
-		e.g.decode(graphCode, 4)
+		e.g.decode(graphCode, numNodes)
 		gCode = graphCode
 	} else {
-		e.g.genConnectedGraph(4, 4, 12, -1, -1)
+		e.g.genConnectedGraph(numNodes, 4, 12, -1, -1)
 		gCode = e.g.encode()
 	}
 	e.g.linkMatrGraph = false
 	e.g.clearMatr()
 	if correction {
-		e.g.decodeMatr(answerCode, 4)
+		e.g.decodeMatr(answerCode, numNodes)
 	}
 
 	nodeSpacing := 300
@@ -62,11 +62,6 @@ func initGraphToMatr(correction bool, graphCode, answerCode int) (e exo, gCode i
 	e.g.ymatrposition = 2*elementSpacing + yTitleShift
 
 	// question setup
-	from := rand.Intn(4)
-	to := rand.Intn(3)
-	if to == from {
-		to = 3
-	}
 	xshift, yshift := graphToMatrImage.Size()
 	e.drawQuestion = func(screen *ebiten.Image) {
 		options := ebiten.DrawImageOptions{}

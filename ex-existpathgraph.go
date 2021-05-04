@@ -13,6 +13,8 @@ func initExistPathGraph(correction bool, graphCode, questionCode, answerCode int
 	e.id = existPathGraph
 	e.successRequired = 5
 
+	numNodes := 6
+
 	elementSpacing := 100
 
 	// title setup
@@ -32,23 +34,23 @@ func initExistPathGraph(correction bool, graphCode, questionCode, answerCode int
 	// question setup part 1
 	var from, to int
 	if correction {
-		from, to = decodeFromToQuestion(questionCode, 4)
+		from, to = decodeFromToQuestion(questionCode, numNodes)
 		qCode = questionCode
 	} else {
-		from = rand.Intn(6)
-		to = rand.Intn(5)
+		from = rand.Intn(numNodes)
+		to = rand.Intn(numNodes - 1)
 		if to == from {
-			to = 5
+			to = numNodes - 1
 		}
-		qCode = encodeFromToQuestion(from, to, 4)
+		qCode = encodeFromToQuestion(from, to, numNodes-1)
 	}
 
 	// graph setup part 2
 	if correction {
-		e.g.decode(graphCode, 6)
+		e.g.decode(graphCode, numNodes)
 		gCode = graphCode
 	} else {
-		e.g.genConnectedGraph(6, 8, 12, from, to)
+		e.g.genConnectedGraph(numNodes, 8, 12, from, to)
 		gCode = e.g.encode()
 	}
 	e.g.linkMatrGraph = false

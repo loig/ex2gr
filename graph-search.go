@@ -21,3 +21,16 @@ func (g *graph) existPath(fromID, toID int) bool {
 	}
 	return false
 }
+
+func (g *graph) existCycle(atID int) bool {
+	if atID < len(g.edges) {
+		for j := 0; j < len(g.edges[atID]); j++ {
+			if g.edges[atID][j] > 0 {
+				if j == atID || g.existPath(j, atID) {
+					return true
+				}
+			}
+		}
+	}
+	return false
+}

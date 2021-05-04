@@ -12,6 +12,8 @@ func initIsTreeMatr(correction bool, graphCode, answerCode int) (e exo, gCode in
 	e.id = isTreeMatr
 	e.successRequired = 5
 
+	numNodes := 6
+
 	elementSpacing := 100
 
 	// title setup
@@ -30,11 +32,11 @@ func initIsTreeMatr(correction bool, graphCode, answerCode int) (e exo, gCode in
 
 	isTree := true
 	if correction {
-		e.g.decode(graphCode, 6)
+		e.g.decode(graphCode, numNodes)
 		gCode = graphCode
 		// todo savoir si c'est un arbre ou pas (probablement grace à la question)
 	} else {
-		e.g.genTree(6)
+		e.g.genTree(numNodes)
 		if rand.Intn(2) == 0 {
 			e.g.demakeTree()
 			isTree = false
