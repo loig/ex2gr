@@ -89,6 +89,7 @@ func (g *graph) makeEmptyGraph(numNodes int) {
 	for i := range g.adjMatr {
 		g.adjMatr[i] = make([]int, numNodes)
 	}
+	g.successorsList = make([][]int, numNodes)
 }
 
 // Build a tree and returns it

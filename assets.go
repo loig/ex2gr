@@ -118,6 +118,22 @@ var existCycleMatrImage *ebiten.Image // should maybe be created only when neede
 var titleExistCycleMatrAsset []byte
 var titleExistCycleMatrImage *ebiten.Image // should maybe be created only when needed
 
+//go:embed assets/ex-existarclist.png
+var existArcListAsset []byte
+var existArcListImage *ebiten.Image // should maybe be created only when needed
+
+//go:embed assets/extitle-existarclist.png
+var titleExistArcListAsset []byte
+var titleExistArcListImage *ebiten.Image // should maybe be created only when needed
+
+//go:embed assets/ex-existpathlist.png
+var existPathListAsset []byte
+var existPathListImage *ebiten.Image // should maybe be created only when needed
+
+//go:embed assets/extitle-existpathlist.png
+var titleExistPathListAsset []byte
+var titleExistPathListImage *ebiten.Image // should maybe be created only when needed
+
 const spriteSide int = 64
 
 func loadAssets() {
@@ -283,6 +299,30 @@ func loadAssets() {
 		log.Fatal(err)
 	}
 	titleExistCycleMatrImage = ebiten.NewImageFromImage(decodedAsset)
+
+	decodedAsset, _, err = image.Decode(bytes.NewReader(existArcListAsset))
+	if err != nil {
+		log.Fatal(err)
+	}
+	existArcListImage = ebiten.NewImageFromImage(decodedAsset)
+
+	decodedAsset, _, err = image.Decode(bytes.NewReader(titleExistArcListAsset))
+	if err != nil {
+		log.Fatal(err)
+	}
+	titleExistArcListImage = ebiten.NewImageFromImage(decodedAsset)
+
+	decodedAsset, _, err = image.Decode(bytes.NewReader(existPathListAsset))
+	if err != nil {
+		log.Fatal(err)
+	}
+	existPathListImage = ebiten.NewImageFromImage(decodedAsset)
+
+	decodedAsset, _, err = image.Decode(bytes.NewReader(titleExistPathListAsset))
+	if err != nil {
+		log.Fatal(err)
+	}
+	titleExistPathListImage = ebiten.NewImageFromImage(decodedAsset)
 }
 
 // split the graphElementsImage
@@ -309,4 +349,9 @@ var (
 	buttonRightSelectedSubimage    = image.Rect(9*spriteSide, 4*spriteSide, 10*spriteSide, 5*spriteSide)
 	undoneQuestionSubimage         = image.Rect(0, 5*spriteSide, spriteSide, 6*spriteSide)
 	doneQuestionSubimage           = image.Rect(spriteSide, 5*spriteSide, 2*spriteSide, 6*spriteSide)
+	twoDotsSubimage                = image.Rect(2*spriteSide, 5*spriteSide, 3*spriteSide, 6*spriteSide)
+	openListSubimage               = image.Rect(3*spriteSide, 5*spriteSide, 4*spriteSide, 6*spriteSide)
+	closeListSubimage              = image.Rect(4*spriteSide, 5*spriteSide, 5*spriteSide, 6*spriteSide)
+	sepListSubimage                = image.Rect(5*spriteSide, 5*spriteSide, 6*spriteSide, 6*spriteSide)
+	emptyListSubimage              = image.Rect(6*spriteSide, 5*spriteSide, 7*spriteSide, 6*spriteSide)
 )

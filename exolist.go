@@ -4,8 +4,10 @@ import "log"
 
 const (
 	existArcGraph int = iota
+	existArcList
 	existArcMatr
 	existPathGraph
+	existPathList
 	existPathMatr
 	existCycleGraph
 	existCycleMatr
@@ -46,6 +48,10 @@ func (g *game) initExo(exNum int) {
 		g.e, g.exState.descriptionExo, g.exState.descriptionQuestion = initExistCycleGraph(g.correctionMode, g.exState.descriptionExo, g.exState.descriptionQuestion, g.exState.answer)
 	case existCycleMatr:
 		g.e, g.exState.descriptionExo, g.exState.descriptionQuestion = initExistCycleMatr(g.correctionMode, g.exState.descriptionExo, g.exState.descriptionQuestion, g.exState.answer)
+	case existArcList:
+		g.e, g.exState.descriptionExo, g.exState.descriptionQuestion = initExistArcList(g.correctionMode, g.exState.descriptionExo, g.exState.descriptionQuestion, g.exState.answer)
+	case existPathList:
+		g.e, g.exState.descriptionExo, g.exState.descriptionQuestion = initExistPathList(g.correctionMode, g.exState.descriptionExo, g.exState.descriptionQuestion, g.exState.answer)
 	}
 
 	log.Print(g.exState.encode())

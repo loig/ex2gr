@@ -20,6 +20,9 @@ type graph struct {
 	adjMatr        [][]int
 	xmatrposition  int
 	ymatrposition  int
+	successorsList [][]int
+	xlistposition  int
+	ylistposition  int
 	linkMatrGraph  bool
 }
 
@@ -186,6 +189,10 @@ func (g *graph) addEdge(from, to int) {
 	g.edges[from][to] = 1
 	if g.linkMatrGraph {
 		g.adjMatr[from][to] = 1
+		if g.successorsList[from] == nil {
+			g.successorsList[from] = make([]int, 0, len(g.edges))
+		}
+		g.successorsList[from] = append(g.successorsList[from], to)
 	}
 	//}
 }
@@ -194,12 +201,84 @@ func (g *graph) removeEdge(from, to int) {
 	g.edges[from][to] = 0
 	if g.linkMatrGraph {
 		g.adjMatr[from][to] = 0
+		toID := 0
+		for toID < len(g.successorsList[from]) && g.successorsList[from][toID] != to {
+			toID++
+		}
+		if toID < len(g.successorsList[from]) {
+			for toID < len(g.successorsList[from])-1 {
+				g.successorsList[from][toID] = g.successorsList[from][toID+1]
+				toID++
+			}
+			g.successorsList[from] = g.successorsList[from][:len(g.successorsList[from])-1]
+		}
 	}
 }
 
 func (g *graph) draw(screen *ebiten.Image, selectedNodes []int, selectedEdge []int, selectedCell []int) {
 	g.drawGraph(screen, selectedNodes, selectedEdge)
 	g.drawMatrix(screen, selectedCell)
+}
+
+func (g *graph) drawList(screen *ebiten.Image) {
+
+	for i := 0; i < len(g.successorsList); i++ {
+		options := ebiten.DrawImageOptions{}
+		options.GeoM.Translate(float64(g.xlistposition), float64(g.ylistposition+i*spriteSide))
+		xLabel := i % 10
+		yLabel := i / 10
+		labelSubimage := image.Rect(
+			xLabel*spriteSide, (yLabel+1)*spriteSide,
+			(xLabel+1)*spriteSide, (yLabel+2)*spriteSide,
+		)
+		screen.DrawImage(
+			graphElementsImage.SubImage(labelSubimage).(*ebiten.Image),
+			&options,
+		)
+		options.GeoM.Translate(float64(spriteSide), 0)
+		screen.DrawImage(
+			graphElementsImage.SubImage(twoDotsSubimage).(*ebiten.Image),
+			&options,
+		)
+		if g.successorsList[i] == nil || len(g.successorsList[i]) == 0 {
+			options.GeoM.Translate(float64(spriteSide), 0)
+			screen.DrawImage(
+				graphElementsImage.SubImage(emptyListSubimage).(*ebiten.Image),
+				&options,
+			)
+		} else {
+			screen.DrawImage(
+				graphElementsImage.SubImage(openListSubimage).(*ebiten.Image),
+				&options,
+			)
+			for jID, j := range g.successorsList[i] {
+				options.GeoM.Translate(float64(spriteSide), 0)
+				xLabel := j % 10
+				yLabel := j / 10
+				labelSubimage := image.Rect(
+					xLabel*spriteSide, (yLabel+1)*spriteSide,
+					(xLabel+1)*spriteSide, (yLabel+2)*spriteSide,
+				)
+				screen.DrawImage(
+					graphElementsImage.SubImage(labelSubimage).(*ebiten.Image),
+					&options,
+				)
+				if jID < len(g.successorsList[i])-1 {
+					screen.DrawImage(
+						graphElementsImage.SubImage(sepListSubimage).(*ebiten.Image),
+						&options,
+					)
+				}
+			}
+			options.GeoM.Translate(float64(spriteSide), 0)
+			screen.DrawImage(
+				graphElementsImage.SubImage(closeListSubimage).(*ebiten.Image),
+				&options,
+			)
+		}
+
+	}
+
 }
 
 func (g *graph) drawMatrix(screen *ebiten.Image, selectedCell []int) {
@@ -506,5 +585,11 @@ func (g *graph) clearGraph() {
 		for j := 0; j < len(g.edges[i]); j++ {
 			g.edges[i][j] = 0
 		}
+	}
+}
+
+func (g *graph) clearList() {
+	for i := 0; i < len(g.successorsList); i++ {
+		g.successorsList[i] = nil
 	}
 }

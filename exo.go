@@ -11,6 +11,7 @@ type exo struct {
 	modifiableAdjMatr bool
 	displayGraph      bool
 	displayAdjMatr    bool
+	displayList       bool
 	selectedNode      int
 	nodeFrom          int
 	nodeAbove         int
@@ -169,6 +170,10 @@ func (e *exo) draw(screen *ebiten.Image, correction bool) {
 
 	if e.displayGraph {
 		e.g.drawGraph(screen, []int{e.nodeAbove, e.nodeFrom}, []int{e.edgeAboveI, e.edgeAboveJ})
+	}
+
+	if e.displayList {
+		e.g.drawList(screen)
 	}
 
 	// question
