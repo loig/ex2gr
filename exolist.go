@@ -10,10 +10,12 @@ const (
 	existPathList
 	existPathMatr
 	existCycleGraph
+	existCycleList
 	existCycleMatr
 	matrToGraph
 	graphToMatr
 	isTreeGraph
+	isTreeList
 	isTreeMatr
 )
 
@@ -52,6 +54,10 @@ func (g *game) initExo(exNum int) {
 		g.e, g.exState.descriptionExo, g.exState.descriptionQuestion = initExistArcList(g.correctionMode, g.exState.descriptionExo, g.exState.descriptionQuestion, g.exState.answer)
 	case existPathList:
 		g.e, g.exState.descriptionExo, g.exState.descriptionQuestion = initExistPathList(g.correctionMode, g.exState.descriptionExo, g.exState.descriptionQuestion, g.exState.answer)
+	case existCycleList:
+		g.e, g.exState.descriptionExo, g.exState.descriptionQuestion = initExistCycleList(g.correctionMode, g.exState.descriptionExo, g.exState.descriptionQuestion, g.exState.answer)
+	case isTreeList:
+		g.e, g.exState.descriptionExo = initIsTreeList(g.correctionMode, g.exState.descriptionExo, g.exState.answer)
 	}
 
 	log.Print(g.exState.encode())

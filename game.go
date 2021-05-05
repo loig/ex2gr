@@ -31,7 +31,7 @@ func (g *game) init(code string) {
 		g.exState.decode(code)
 		g.initExo(g.exState.numExo)
 	} else {
-		g.initExo(existPathList)
+		g.initExo(existArcGraph)
 	}
 }
 

@@ -134,6 +134,22 @@ var existPathListImage *ebiten.Image // should maybe be created only when needed
 var titleExistPathListAsset []byte
 var titleExistPathListImage *ebiten.Image // should maybe be created only when needed
 
+//go:embed assets/ex-existcyclelist.png
+var existCycleListAsset []byte
+var existCycleListImage *ebiten.Image // should maybe be created only when needed
+
+//go:embed assets/extitle-existcyclelist.png
+var titleExistCycleListAsset []byte
+var titleExistCycleListImage *ebiten.Image // should maybe be created only when needed
+
+//go:embed assets/ex-istreelist.png
+var isTreeListAsset []byte
+var isTreeListImage *ebiten.Image // should maybe be created only when needed
+
+//go:embed assets/extitle-istreelist.png
+var titleIsTreeListAsset []byte
+var titleIsTreeListImage *ebiten.Image // should maybe be created only when needed
+
 const spriteSide int = 64
 
 func loadAssets() {
@@ -323,6 +339,30 @@ func loadAssets() {
 		log.Fatal(err)
 	}
 	titleExistPathListImage = ebiten.NewImageFromImage(decodedAsset)
+
+	decodedAsset, _, err = image.Decode(bytes.NewReader(existCycleListAsset))
+	if err != nil {
+		log.Fatal(err)
+	}
+	existCycleListImage = ebiten.NewImageFromImage(decodedAsset)
+
+	decodedAsset, _, err = image.Decode(bytes.NewReader(titleExistCycleListAsset))
+	if err != nil {
+		log.Fatal(err)
+	}
+	titleExistCycleListImage = ebiten.NewImageFromImage(decodedAsset)
+
+	decodedAsset, _, err = image.Decode(bytes.NewReader(isTreeListAsset))
+	if err != nil {
+		log.Fatal(err)
+	}
+	isTreeListImage = ebiten.NewImageFromImage(decodedAsset)
+
+	decodedAsset, _, err = image.Decode(bytes.NewReader(titleIsTreeListAsset))
+	if err != nil {
+		log.Fatal(err)
+	}
+	titleIsTreeListImage = ebiten.NewImageFromImage(decodedAsset)
 }
 
 // split the graphElementsImage
