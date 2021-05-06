@@ -150,6 +150,14 @@ var isTreeListImage *ebiten.Image // should maybe be created only when needed
 var titleIsTreeListAsset []byte
 var titleIsTreeListImage *ebiten.Image // should maybe be created only when needed
 
+//go:embed assets/ex-listtograph.png
+var listToGraphAsset []byte
+var listToGraphImage *ebiten.Image // should maybe be created only when needed
+
+//go:embed assets/extitle-listtograph.png
+var titleListToGraphAsset []byte
+var titleListToGraphImage *ebiten.Image // should maybe be created only when needed
+
 const spriteSide int = 64
 
 func loadAssets() {
@@ -363,6 +371,18 @@ func loadAssets() {
 		log.Fatal(err)
 	}
 	titleIsTreeListImage = ebiten.NewImageFromImage(decodedAsset)
+
+	decodedAsset, _, err = image.Decode(bytes.NewReader(listToGraphAsset))
+	if err != nil {
+		log.Fatal(err)
+	}
+	listToGraphImage = ebiten.NewImageFromImage(decodedAsset)
+
+	decodedAsset, _, err = image.Decode(bytes.NewReader(titleListToGraphAsset))
+	if err != nil {
+		log.Fatal(err)
+	}
+	titleListToGraphImage = ebiten.NewImageFromImage(decodedAsset)
 }
 
 // split the graphElementsImage
