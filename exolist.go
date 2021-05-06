@@ -1,6 +1,10 @@
 package main
 
-import "log"
+import (
+	"log"
+
+	"github.com/hajimehoshi/ebiten/v2"
+)
 
 const (
 	existArcGraph int = iota
@@ -21,6 +25,7 @@ const (
 	isTreeGraph
 	isTreeList
 	isTreeMatr
+	globalNumExo
 )
 
 func (g *game) initExo(exNum int) {
@@ -73,5 +78,50 @@ func (g *game) initExo(exNum int) {
 	}
 
 	log.Print(g.exState.encode())
+
+}
+
+func getExTitlePerNum(exNum int) *ebiten.Image {
+
+	switch exNum {
+	case existArcGraph:
+		return title1Image
+	case existArcMatr:
+		return title2Image
+	case existPathGraph:
+		return titleExistPathGraphImage
+	case existPathMatr:
+		return titleExistPathMatrImage
+	case graphToMatr:
+		return titleGraphToMatrImage
+	case matrToGraph:
+		return titleMatrToGraphImage
+	case isTreeGraph:
+		return titleIsTreeGraphImage
+	case isTreeMatr:
+		return titleIsTreeMatrImage
+	case existCycleGraph:
+		return titleExistCycleGraphImage
+	case existCycleMatr:
+		return titleExistCycleMatrImage
+	case existArcList:
+		return titleExistArcListImage
+	case existPathList:
+		return titleExistPathListImage
+	case existCycleList:
+		return titleExistCycleListImage
+	case isTreeList:
+		return titleIsTreeListImage
+	case listToGraph:
+		return titleListToGraphImage
+	case graphToList:
+		return titleGraphToListImage
+	case listToMatr:
+		return titleListToMatrImage
+	case matrToList:
+		return titleMatrToListImage
+	}
+
+	return nil
 
 }

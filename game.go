@@ -9,29 +9,42 @@ import (
 )
 
 type game struct {
-	e                  exo
-	readyForNext       bool
-	onClicNextButton   int
-	selectedNextButton int
-	goToNext           answerSheet
-	exoDone            bool
-	succesfulStrike    int
-	correctionMode     bool
-	exState            stateDescription
+	e                    exo
+	readyForNext         bool
+	onClicNextButton     int
+	selectedNextButton   int
+	goToNextEx           answerSheet
+	goToNextQ            answerSheet
+	exoDone              bool
+	succesfulStrike      int
+	correctionMode       bool
+	exState              stateDescription
+	inMenu               bool
+	goToMenu             bool
+	menu                 menuInfo
+	menuItemSelected     int
+	lastMenuItemSelected int
 }
 
 func (g *game) init(code string) {
-	g.goToNext.init(0, windowHeight-200)
+	g.goToNextEx.init(0, windowHeight-200)
+	g.goToNextQ.init(0, windowHeight-200)
 	xshift, _ := suivantImage.Size()
-	g.goToNext.addButton((windowWidth-xshift)/2, 0, suivantImage)
+	g.goToNextEx.addButton((windowWidth-xshift)/2-200, 0, suivantImage)
+	g.goToNextEx.addButton((windowWidth-xshift)/2+200, 0, menuImage)
+	xshift, _ = questionImage.Size()
+	g.goToNextQ.addButton((windowWidth-xshift)/2, 0, questionImage)
 	g.onClicNextButton = -1
 	g.selectedNextButton = -1
+	g.menuItemSelected = -1
+	g.lastMenuItemSelected = -1
+	g.inMenu = true
 	if code != "" {
+		g.inMenu = false
+		g.goToMenu = false
 		g.correctionMode = true
 		g.exState.decode(code)
 		g.initExo(g.exState.numExo)
-	} else {
-		g.initExo(existArcGraph)
 	}
 }
 
@@ -40,7 +53,12 @@ func (g *game) reset() {
 	g.selectedNextButton = -1
 	g.readyForNext = false
 	g.exoDone = false
-	g.goToNext.resetClics()
+	g.menuItemSelected = -1
+	g.lastMenuItemSelected = -1
+	g.inMenu = false
+	g.goToMenu = false
+	g.goToNextEx.resetClics()
+	g.goToNextQ.resetClics()
 }
 
 func (g *game) Update() error {
@@ -48,6 +66,24 @@ func (g *game) Update() error {
 
 	if g.correctionMode {
 		g.e.update(x, y, true)
+		return nil
+	}
+
+	if g.inMenu {
+		g.menuItemSelected = g.checkAboveMenuEx(x, y)
+		if inpututil.IsMouseButtonJustReleased(ebiten.MouseButtonLeft) {
+			if g.menuItemSelected >= 0 && g.menuItemSelected < globalNumExo && g.menuItemSelected == g.lastMenuItemSelected {
+				g.menu.exoTried[g.menuItemSelected]++
+				g.initExo(g.menuItemSelected)
+				g.reset()
+			} else {
+				g.lastMenuItemSelected = g.menuItemSelected
+			}
+			return nil
+		}
+		if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
+			g.lastMenuItemSelected = g.menuItemSelected
+		}
 		return nil
 	}
 
@@ -59,11 +95,13 @@ func (g *game) Update() error {
 			log.Print(g.exState.encode())
 			if g.e.correct {
 				g.succesfulStrike++
-				g.goToNext.aboveText = bravoImage
+				g.goToNextQ.aboveText = bravoImage
 			} else {
 				g.succesfulStrike = 0
-				g.goToNext.aboveText = rateImage
+				g.menu.exoTried[g.e.id]++
+				g.goToNextQ.aboveText = rateImage
 			}
+			g.goToNextEx.aboveText = g.goToNextQ.aboveText
 		}
 	}
 
@@ -72,22 +110,43 @@ func (g *game) Update() error {
 			// This is where counting of succes and so should be done
 			currentID := g.e.id
 			if g.succesfulStrike >= g.e.successRequired {
-				currentID++
+				g.menu.exoDone[currentID] = true
+				if !g.goToMenu {
+					currentID = g.getNextUndoneID(currentID)
+					if currentID >= 0 {
+						g.menu.exoTried[currentID]++
+					} else {
+						g.goToMenu = true
+					}
+				}
 				g.succesfulStrike = 0
 			}
-			g.initExo(currentID)
-			g.reset()
+			if !g.goToMenu {
+				g.initExo(currentID)
+				g.reset()
+			} else {
+				g.inMenu = true
+			}
+			return nil
 		}
-		g.selectedNextButton = g.goToNext.selectButton(x, y)
+		usedSheet := &g.goToNextQ
+		if g.succesfulStrike >= g.e.successRequired {
+			usedSheet = &g.goToNextEx
+		}
+		g.selectedNextButton = usedSheet.selectButton(x, y)
 		if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
 			g.onClicNextButton = g.selectedNextButton
 		}
 		if inpututil.IsMouseButtonJustReleased(ebiten.MouseButtonLeft) {
 			if g.onClicNextButton == g.selectedNextButton {
-				g.goToNext.clic(g.selectedNextButton)
+				usedSheet.clic(g.selectedNextButton)
 			}
 		}
-		g.readyForNext = g.goToNext.clics[0] > 0
+		g.readyForNext = usedSheet.clics[0] > 0
+		if g.succesfulStrike >= g.e.successRequired && len(usedSheet.clics) > 1 {
+			g.goToMenu = usedSheet.clics[1] > 0
+			g.readyForNext = g.readyForNext || g.goToMenu
+		}
 		return nil
 	}
 	return nil
@@ -96,6 +155,11 @@ func (g *game) Update() error {
 func (g *game) Draw(screen *ebiten.Image) {
 	screen.Fill(color.White)
 
+	if g.inMenu && !g.correctionMode {
+		g.drawMenu(screen, g.menuItemSelected)
+		return
+	}
+
 	g.e.draw(screen, g.correctionMode)
 
 	if !g.correctionMode {
@@ -103,7 +167,11 @@ func (g *game) Draw(screen *ebiten.Image) {
 
 		// next exo
 		if g.exoDone {
-			g.goToNext.draw(screen, g.selectedNextButton)
+			usedSheet := &g.goToNextQ
+			if g.succesfulStrike >= g.e.successRequired {
+				usedSheet = &g.goToNextEx
+			}
+			usedSheet.draw(screen, g.selectedNextButton)
 		}
 	}
 }

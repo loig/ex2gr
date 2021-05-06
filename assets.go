@@ -14,6 +14,10 @@ import (
 var graphAssets []byte
 var graphElementsImage *ebiten.Image
 
+//go:embed assets/menusprites.png
+var menuElementsAsset []byte
+var menuElementsImage *ebiten.Image
+
 //go:embed assets/oui.png
 var ouiAsset []byte
 var ouiImage *ebiten.Image
@@ -182,7 +186,16 @@ var matrToListImage *ebiten.Image // should maybe be created only when needed
 var titleMatrToListAsset []byte
 var titleMatrToListImage *ebiten.Image // should maybe be created only when needed
 
+//go:embed assets/menu.png
+var menuAsset []byte
+var menuImage *ebiten.Image
+
+//go:embed assets/qsuivante.png
+var questionAsset []byte
+var questionImage *ebiten.Image
+
 const spriteSide int = 64
+const menuSpriteSide int = 128
 
 func loadAssets() {
 	var err error
@@ -443,6 +456,24 @@ func loadAssets() {
 		log.Fatal(err)
 	}
 	titleMatrToListImage = ebiten.NewImageFromImage(decodedAsset)
+
+	decodedAsset, _, err = image.Decode(bytes.NewReader(menuElementsAsset))
+	if err != nil {
+		log.Fatal(err)
+	}
+	menuElementsImage = ebiten.NewImageFromImage(decodedAsset)
+
+	decodedAsset, _, err = image.Decode(bytes.NewReader(menuAsset))
+	if err != nil {
+		log.Fatal(err)
+	}
+	menuImage = ebiten.NewImageFromImage(decodedAsset)
+
+	decodedAsset, _, err = image.Decode(bytes.NewReader(questionAsset))
+	if err != nil {
+		log.Fatal(err)
+	}
+	questionImage = ebiten.NewImageFromImage(decodedAsset)
 }
 
 // split the graphElementsImage
@@ -478,4 +509,15 @@ var (
 	lessListSubimage               = image.Rect(8*spriteSide, 5*spriteSide, 9*spriteSide, 6*spriteSide)
 	moreSelectedListSubimage       = image.Rect(9*spriteSide, 5*spriteSide, 10*spriteSide, 6*spriteSide)
 	lessSelectedListSubimage       = image.Rect(0, 6*spriteSide, spriteSide, 7*spriteSide)
+)
+
+// split the menuElementsImage
+var (
+	menuExSubimage             = image.Rect(0, 0, menuSpriteSide, menuSpriteSide)
+	menuExDoneSubimage         = image.Rect(menuSpriteSide, 0, 2*menuSpriteSide, menuSpriteSide)
+	menuExSelectedSubimage     = image.Rect(2*menuSpriteSide, 0, 3*menuSpriteSide, menuSpriteSide)
+	menuExDoneSelectedSubimage = image.Rect(3*menuSpriteSide, 0, 4*menuSpriteSide, menuSpriteSide)
+	menuDoneMarkSubimage       = image.Rect(4*menuSpriteSide, 0, 5*menuSpriteSide, menuSpriteSide)
+	menuTriesText              = image.Rect(3*menuSpriteSide, menuSpriteSide, 4*menuSpriteSide, menuSpriteSide+menuSpriteSide/2)
+	menuDoneText               = image.Rect(3*menuSpriteSide, menuSpriteSide+menuSpriteSide/2, 4*menuSpriteSide, 2*menuSpriteSide)
 )

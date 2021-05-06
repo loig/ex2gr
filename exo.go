@@ -49,6 +49,8 @@ func (e *exo) BasicSetup() {
 	e.selectedCellI = -1
 	e.selectedCellJ = -1
 	e.selectedButton = -1
+	e.selectedListI = -1
+	e.selectedListJ = -1
 }
 
 func (e *exo) update(x, y int, correction bool) {
