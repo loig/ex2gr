@@ -166,6 +166,22 @@ var graphToListImage *ebiten.Image // should maybe be created only when needed
 var titleGraphToListAsset []byte
 var titleGraphToListImage *ebiten.Image // should maybe be created only when needed
 
+//go:embed assets/ex-listtomatr.png
+var listToMatrAsset []byte
+var listToMatrImage *ebiten.Image // should maybe be created only when needed
+
+//go:embed assets/extitle-listtomatr.png
+var titleListToMatrAsset []byte
+var titleListToMatrImage *ebiten.Image // should maybe be created only when needed
+
+//go:embed assets/ex-matrtolist.png
+var matrToListAsset []byte
+var matrToListImage *ebiten.Image // should maybe be created only when needed
+
+//go:embed assets/extitle-matrtolist.png
+var titleMatrToListAsset []byte
+var titleMatrToListImage *ebiten.Image // should maybe be created only when needed
+
 const spriteSide int = 64
 
 func loadAssets() {
@@ -403,6 +419,30 @@ func loadAssets() {
 		log.Fatal(err)
 	}
 	titleGraphToListImage = ebiten.NewImageFromImage(decodedAsset)
+
+	decodedAsset, _, err = image.Decode(bytes.NewReader(listToMatrAsset))
+	if err != nil {
+		log.Fatal(err)
+	}
+	listToMatrImage = ebiten.NewImageFromImage(decodedAsset)
+
+	decodedAsset, _, err = image.Decode(bytes.NewReader(titleListToMatrAsset))
+	if err != nil {
+		log.Fatal(err)
+	}
+	titleListToMatrImage = ebiten.NewImageFromImage(decodedAsset)
+
+	decodedAsset, _, err = image.Decode(bytes.NewReader(matrToListAsset))
+	if err != nil {
+		log.Fatal(err)
+	}
+	matrToListImage = ebiten.NewImageFromImage(decodedAsset)
+
+	decodedAsset, _, err = image.Decode(bytes.NewReader(titleMatrToListAsset))
+	if err != nil {
+		log.Fatal(err)
+	}
+	titleMatrToListImage = ebiten.NewImageFromImage(decodedAsset)
 }
 
 // split the graphElementsImage

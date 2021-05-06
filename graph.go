@@ -723,6 +723,27 @@ func (g *graph) checkGraphListEquality() bool {
 	return true
 }
 
+func (g *graph) checkListMatrEquality() bool {
+
+	for i := 0; i < len(g.adjMatr); i++ {
+		for j := 0; j < len(g.adjMatr[i]); j++ {
+			mustFound := g.adjMatr[i][j] > 0
+			found := false
+			for jID := 0; jID < len(g.successorsList[i]); jID++ {
+				if g.successorsList[i][jID] == j {
+					found = true
+					break
+				}
+			}
+			if (!found && mustFound) || (found && !mustFound) {
+				return false
+			}
+		}
+	}
+
+	return true
+}
+
 func (g *graph) clearMatr() {
 	for i := 0; i < len(g.adjMatr); i++ {
 		for j := 0; j < len(g.adjMatr[i]); j++ {
