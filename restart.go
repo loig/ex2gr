@@ -65,6 +65,27 @@ func (g *graph) encodeMatr() int {
 	return code
 }
 
+func (g *graph) encodeList() int {
+	code := 0
+	for i := 0; i < len(g.successorsList); i++ {
+		for j := 0; j < len(g.successorsList); j++ {
+			found := false
+			for _, jj := range g.successorsList[i] {
+				if jj == j {
+					found = true
+					break
+				}
+			}
+			if found {
+				code = 2*code + 1
+			} else {
+				code = 2 * code
+			}
+		}
+	}
+	return code
+}
+
 func (g *graph) decode(code int, numNodes int) {
 	g.makeEmptyGraph(numNodes)
 	g.linkMatrGraph = true
@@ -103,6 +124,20 @@ func (g *graph) decodeMatr(code int, numNodes int) {
 	for i := len(g.edges) - 1; i >= 0; i-- {
 		for j := len(g.edges) - 1; j >= 0; j-- {
 			g.adjMatr[i][j] = code % 2
+			code = code / 2
+		}
+	}
+}
+
+func (g *graph) decodeList(code int, numNodes int) {
+	for i := len(g.successorsList) - 1; i >= 0; i-- {
+		for j := len(g.successorsList) - 1; j >= 0; j-- {
+			if code%2 == 1 {
+				if g.successorsList[i] == nil {
+					g.successorsList[i] = make([]int, 0, len(g.successorsList))
+				}
+				g.successorsList[i] = append(g.successorsList[i], j)
+			}
 			code = code / 2
 		}
 	}

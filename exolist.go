@@ -14,6 +14,7 @@ const (
 	existCycleMatr
 	listToGraph
 	matrToGraph
+	graphToList
 	graphToMatr
 	isTreeGraph
 	isTreeList
@@ -61,6 +62,8 @@ func (g *game) initExo(exNum int) {
 		g.e, g.exState.descriptionExo = initIsTreeList(g.correctionMode, g.exState.descriptionExo, g.exState.answer)
 	case listToGraph:
 		g.e, g.exState.descriptionExo = initListToGraph(g.correctionMode, g.exState.descriptionExo, g.exState.answer)
+	case graphToList:
+		g.e, g.exState.descriptionExo = initGraphToList(g.correctionMode, g.exState.descriptionExo, g.exState.answer)
 	}
 
 	log.Print(g.exState.encode())

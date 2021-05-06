@@ -190,7 +190,7 @@ func (e *exo) draw(screen *ebiten.Image, correction bool) {
 	}
 
 	if e.displayList {
-		e.g.drawList(screen, []int{e.selectedListI, e.selectedListJ}, e.selectedListUp, e.modifiableList)
+		e.g.drawList(screen, []int{e.selectedListI, e.selectedListJ}, e.selectedListUp, e.modifiableList && !correction)
 	}
 
 	// question
