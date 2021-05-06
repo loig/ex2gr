@@ -394,4 +394,8 @@ var (
 	closeListSubimage              = image.Rect(4*spriteSide, 5*spriteSide, 5*spriteSide, 6*spriteSide)
 	sepListSubimage                = image.Rect(5*spriteSide, 5*spriteSide, 6*spriteSide, 6*spriteSide)
 	emptyListSubimage              = image.Rect(6*spriteSide, 5*spriteSide, 7*spriteSide, 6*spriteSide)
+	moreListSubimage               = image.Rect(7*spriteSide, 5*spriteSide, 8*spriteSide, 6*spriteSide)
+	lessListSubimage               = image.Rect(8*spriteSide, 5*spriteSide, 9*spriteSide, 6*spriteSide)
+	moreSelectedListSubimage       = image.Rect(9*spriteSide, 5*spriteSide, 10*spriteSide, 6*spriteSide)
+	lessSelectedListSubimage       = image.Rect(0, 6*spriteSide, spriteSide, 7*spriteSide)
 )

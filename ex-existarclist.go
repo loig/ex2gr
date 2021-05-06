@@ -28,6 +28,7 @@ func initExistArcList(correction bool, graphCode, questionCode, answerCode int) 
 	// graph setup
 	e.modifiableGraph = false
 	e.modifiableAdjMatr = false
+	e.modifiableList = true
 	e.displayGraph = false
 	e.displayAdjMatr = false
 	e.displayList = true

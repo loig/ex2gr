@@ -9,6 +9,7 @@ type exo struct {
 	g                 graph
 	modifiableGraph   bool
 	modifiableAdjMatr bool
+	modifiableList    bool
 	displayGraph      bool
 	displayAdjMatr    bool
 	displayList       bool
@@ -19,6 +20,9 @@ type exo struct {
 	edgeAboveJ        int
 	selectedCellI     int
 	selectedCellJ     int
+	selectedListI     int
+	selectedListJ     int
+	selectedListUp    bool
 	hasAnswerSheet    bool
 	answers           answerSheet
 	onClicButton      int
@@ -149,6 +153,19 @@ func (e *exo) update(x, y int, correction bool) {
 		}
 	}
 
+	if e.displayList {
+		// list
+		e.selectedListI, e.selectedListJ, e.selectedListUp = e.g.selectListElement(x, y)
+
+		if !correction && e.modifiableList {
+			if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
+				if e.selectedListI >= 0 && e.selectedListJ >= 0 {
+					e.g.updateListElement(e.selectedListI, e.selectedListJ, e.selectedListUp)
+				}
+			}
+		}
+	}
+
 }
 
 func (e *exo) draw(screen *ebiten.Image, correction bool) {
@@ -173,7 +190,7 @@ func (e *exo) draw(screen *ebiten.Image, correction bool) {
 	}
 
 	if e.displayList {
-		e.g.drawList(screen)
+		e.g.drawList(screen, []int{e.selectedListI, e.selectedListJ}, e.selectedListUp, e.modifiableList)
 	}
 
 	// question

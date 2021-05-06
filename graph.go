@@ -46,6 +46,66 @@ const (
 	matrixCellSize     = spriteSide
 )
 
+func (g *graph) selectListElement(x, y int) (int, int, bool) {
+	xx := x - g.xlistposition
+	yy := y - g.ylistposition
+	if yy >= 0 && yy < spriteSide*len(g.successorsList) {
+		yyy := yy / spriteSide
+		if xx >= 0 && xx < spriteSide*(len(g.successorsList[yyy])+3) {
+			return yyy, xx/spriteSide - 2, yy-(yyy*spriteSide) < spriteSide/2
+		}
+		if xx >= 0 && xx < spriteSide*4 && len(g.successorsList[yyy]) == 0 {
+			return yyy, 1, yy-(yyy*spriteSide) < spriteSide/2
+		}
+	}
+	return -1, -1, false
+}
+
+func (g *graph) updateListElement(i, j int, up bool) {
+	if i >= 0 && j >= 0 {
+		if len(g.successorsList[i]) < len(g.successorsList) {
+			// if all nodes are successors, no node can be changed nor added
+			if j < len(g.successorsList[i]) {
+				// change a node
+				g.successorsList[i][j] = getNextOkNode(g.successorsList[i], g.successorsList[i][j], len(g.successorsList))
+			} else {
+				// change the size of the list
+				if up || len(g.successorsList[i]) <= 0 {
+					if g.successorsList[i] == nil {
+						g.successorsList[i] = make([]int, 0, len(g.successorsList))
+					}
+					g.successorsList[i] = append(g.successorsList[i], getNextOkNode(g.successorsList[i], -1, len(g.successorsList)))
+				} else {
+					g.successorsList[i] = g.successorsList[i][:len(g.successorsList[i])-1]
+				}
+			}
+		} else {
+			if !up {
+				g.successorsList[i] = g.successorsList[i][:len(g.successorsList[i])-1]
+			}
+		}
+	}
+}
+
+func getNextOkNode(nodes []int, start int, numNodes int) int {
+
+	res := (start + 1) % numNodes
+	for res != start {
+		var found bool
+		for _, n := range nodes {
+			found = n == res
+			if found {
+				break
+			}
+		}
+		if !found {
+			return res
+		}
+		res = (res + 1) % numNodes
+	}
+	return res
+}
+
 func (g *graph) selectMatrixCell(x, y int) (int, int) {
 	xx := x - g.xmatrposition
 	yy := y - g.ymatrposition
@@ -220,13 +280,19 @@ func (g *graph) draw(screen *ebiten.Image, selectedNodes []int, selectedEdge []i
 	g.drawMatrix(screen, selectedCell)
 }
 
-func (g *graph) drawList(screen *ebiten.Image) {
+func (g *graph) drawList(screen *ebiten.Image, selectedElement []int, up bool, modifiable bool) {
 
 	for i := 0; i < len(g.successorsList); i++ {
 		options := ebiten.DrawImageOptions{}
 		options.GeoM.Translate(float64(g.xlistposition), float64(g.ylistposition+i*spriteSide))
 		xLabel := i % 10
 		yLabel := i / 10
+		if selectedElement[0] == i {
+			screen.DrawImage(
+				graphElementsImage.SubImage(nodeSelectedSubimage).(*ebiten.Image),
+				&options,
+			)
+		}
 		labelSubimage := image.Rect(
 			xLabel*spriteSide, (yLabel+1)*spriteSide,
 			(xLabel+1)*spriteSide, (yLabel+2)*spriteSide,
@@ -246,6 +312,20 @@ func (g *graph) drawList(screen *ebiten.Image) {
 				graphElementsImage.SubImage(emptyListSubimage).(*ebiten.Image),
 				&options,
 			)
+			if modifiable {
+				options.GeoM.Translate(float64(spriteSide), 0)
+				if selectedElement[0] == i && selectedElement[1] >= 1 && up {
+					screen.DrawImage(
+						graphElementsImage.SubImage(moreSelectedListSubimage).(*ebiten.Image),
+						&options,
+					)
+				} else {
+					screen.DrawImage(
+						graphElementsImage.SubImage(moreListSubimage).(*ebiten.Image),
+						&options,
+					)
+				}
+			}
 		} else {
 			screen.DrawImage(
 				graphElementsImage.SubImage(openListSubimage).(*ebiten.Image),
@@ -255,6 +335,12 @@ func (g *graph) drawList(screen *ebiten.Image) {
 				options.GeoM.Translate(float64(spriteSide), 0)
 				xLabel := j % 10
 				yLabel := j / 10
+				if selectedElement[0] == i && selectedElement[1] == jID {
+					screen.DrawImage(
+						graphElementsImage.SubImage(nodeSelectedSubimage).(*ebiten.Image),
+						&options,
+					)
+				}
 				labelSubimage := image.Rect(
 					xLabel*spriteSide, (yLabel+1)*spriteSide,
 					(xLabel+1)*spriteSide, (yLabel+2)*spriteSide,
@@ -275,6 +361,50 @@ func (g *graph) drawList(screen *ebiten.Image) {
 				graphElementsImage.SubImage(closeListSubimage).(*ebiten.Image),
 				&options,
 			)
+			if modifiable {
+				if selectedElement[0] == i && selectedElement[1] >= len(g.successorsList[i]) {
+					if up {
+						if len(g.successorsList[i]) < len(g.successorsList) {
+							screen.DrawImage(
+								graphElementsImage.SubImage(moreSelectedListSubimage).(*ebiten.Image),
+								&options,
+							)
+						}
+						if len(g.successorsList[i]) > 0 {
+							screen.DrawImage(
+								graphElementsImage.SubImage(lessListSubimage).(*ebiten.Image),
+								&options,
+							)
+						}
+					} else {
+						if len(g.successorsList[i]) < len(g.successorsList) {
+							screen.DrawImage(
+								graphElementsImage.SubImage(moreListSubimage).(*ebiten.Image),
+								&options,
+							)
+						}
+						if len(g.successorsList[i]) > 0 {
+							screen.DrawImage(
+								graphElementsImage.SubImage(lessSelectedListSubimage).(*ebiten.Image),
+								&options,
+							)
+						}
+					}
+				} else {
+					if len(g.successorsList[i]) < len(g.successorsList) {
+						screen.DrawImage(
+							graphElementsImage.SubImage(moreListSubimage).(*ebiten.Image),
+							&options,
+						)
+					}
+					if len(g.successorsList[i]) > 0 {
+						screen.DrawImage(
+							graphElementsImage.SubImage(lessListSubimage).(*ebiten.Image),
+							&options,
+						)
+					}
+				}
+			}
 		}
 
 	}
