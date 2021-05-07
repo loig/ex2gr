@@ -1,7 +1,6 @@
 package main
 
 import (
-	"log"
 	"math/rand"
 )
 
@@ -140,8 +139,6 @@ func (g *graph) demakeTree() {
 			root = j
 		}
 	}
-
-	log.Print("Root: ", root)
 
 	// count edges going out of root
 	outRoot := 0

@@ -194,6 +194,10 @@ var menuImage *ebiten.Image
 var questionAsset []byte
 var questionImage *ebiten.Image
 
+//go:embed assets/generaltitle.png
+var generalTitleAsset []byte
+var generalTitleImage *ebiten.Image
+
 const spriteSide int = 64
 const menuSpriteSide int = 128
 
@@ -474,6 +478,12 @@ func loadAssets() {
 		log.Fatal(err)
 	}
 	questionImage = ebiten.NewImageFromImage(decodedAsset)
+
+	decodedAsset, _, err = image.Decode(bytes.NewReader(generalTitleAsset))
+	if err != nil {
+		log.Fatal(err)
+	}
+	generalTitleImage = ebiten.NewImageFromImage(decodedAsset)
 }
 
 // split the graphElementsImage
@@ -509,6 +519,7 @@ var (
 	lessListSubimage               = image.Rect(8*spriteSide, 5*spriteSide, 9*spriteSide, 6*spriteSide)
 	moreSelectedListSubimage       = image.Rect(9*spriteSide, 5*spriteSide, 10*spriteSide, 6*spriteSide)
 	lessSelectedListSubimage       = image.Rect(0, 6*spriteSide, spriteSide, 7*spriteSide)
+	quitExSubimage                 = image.Rect(spriteSide, 6*spriteSide, 2*spriteSide, 7*spriteSide)
 )
 
 // split the menuElementsImage

@@ -22,6 +22,9 @@ const (
 )
 
 func (g *game) drawMenu(screen *ebiten.Image, selectedEx int) {
+
+	screen.DrawImage(generalTitleImage, &ebiten.DrawImageOptions{})
+
 	for i := 0; i < globalNumExo; i++ {
 		sprite := menuExSubimage
 		if g.menu.exoDone[i] {

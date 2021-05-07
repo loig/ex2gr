@@ -6,38 +6,41 @@ import (
 )
 
 type exo struct {
-	g                 graph
-	modifiableGraph   bool
-	modifiableAdjMatr bool
-	modifiableList    bool
-	displayGraph      bool
-	displayAdjMatr    bool
-	displayList       bool
-	selectedNode      int
-	nodeFrom          int
-	nodeAbove         int
-	edgeAboveI        int
-	edgeAboveJ        int
-	selectedCellI     int
-	selectedCellJ     int
-	selectedListI     int
-	selectedListJ     int
-	selectedListUp    bool
-	hasAnswerSheet    bool
-	answers           answerSheet
-	onClicButton      int
-	selectedButton    int
-	checkResult       func() (correct bool, finished bool)
-	drawQuestion      func(*ebiten.Image)
-	done              bool
-	correct           bool
-	titleXPosition    int
-	titleYPosition    int
-	titleImage        *ebiten.Image
-	id                int
-	successRequired   int
-	successCounterY   int
-	codeAnswer        func() int
+	g                  graph
+	modifiableGraph    bool
+	modifiableAdjMatr  bool
+	modifiableList     bool
+	displayGraph       bool
+	displayAdjMatr     bool
+	displayList        bool
+	selectedNode       int
+	nodeFrom           int
+	nodeAbove          int
+	edgeAboveI         int
+	edgeAboveJ         int
+	selectedCellI      int
+	selectedCellJ      int
+	selectedListI      int
+	selectedListJ      int
+	selectedListUp     bool
+	hasAnswerSheet     bool
+	answers            answerSheet
+	onClicButton       int
+	selectedButton     int
+	checkResult        func() (correct bool, finished bool)
+	drawQuestion       func(*ebiten.Image)
+	done               bool
+	correct            bool
+	titleXPosition     int
+	titleYPosition     int
+	titleImage         *ebiten.Image
+	id                 int
+	successRequired    int
+	successCounterY    int
+	codeAnswer         func() int
+	quitButton         answerSheet
+	selectedQuitButton int
+	onClicQuitButton   int
 }
 
 func (e *exo) BasicSetup() {
@@ -51,12 +54,24 @@ func (e *exo) BasicSetup() {
 	e.selectedButton = -1
 	e.selectedListI = -1
 	e.selectedListJ = -1
+	e.quitButton.init(windowWidth-spriteSide-10, 0)
+	e.quitButton.addButton(5, 5, graphElementsImage.SubImage(quitExSubimage).(*ebiten.Image))
 }
 
 func (e *exo) update(x, y int, correction bool) {
 
 	if !correction && !e.done {
 		e.correct, e.done = e.checkResult()
+	}
+
+	e.selectedQuitButton = e.quitButton.selectButton(x, y)
+	if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
+		e.onClicQuitButton = e.selectedQuitButton
+	}
+	if inpututil.IsMouseButtonJustReleased(ebiten.MouseButtonLeft) {
+		if e.onClicQuitButton == e.selectedQuitButton {
+			e.quitButton.clic(e.selectedQuitButton)
+		}
 	}
 
 	if !correction && e.done {
@@ -174,6 +189,11 @@ func (e *exo) draw(screen *ebiten.Image, correction bool) {
 
 	// title
 	e.drawTitle(screen)
+
+	// quit
+	if !e.done {
+		e.quitButton.draw(screen, e.selectedQuitButton)
+	}
 
 	// graph
 	if !correction && e.modifiableGraph && e.displayGraph {

@@ -103,6 +103,9 @@ func (g *game) Update() error {
 			}
 			g.goToNextEx.aboveText = g.goToNextQ.aboveText
 		}
+		if g.e.quitButton.clics[0] > 0 {
+			g.inMenu = true
+		}
 	}
 
 	if g.exoDone {
