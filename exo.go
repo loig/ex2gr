@@ -191,7 +191,7 @@ func (e *exo) draw(screen *ebiten.Image, correction bool) {
 	e.drawTitle(screen)
 
 	// quit
-	if !e.done {
+	if !e.done && !correction {
 		e.quitButton.draw(screen, e.selectedQuitButton)
 	}
 

@@ -25,6 +25,7 @@ const (
 	isTreeGraph
 	isTreeList
 	isTreeMatr
+	degreeGraph
 	globalNumExo
 )
 
@@ -75,6 +76,8 @@ func (g *game) initExo(exNum int) {
 		g.e, g.exState.descriptionExo = initListToMatr(g.correctionMode, g.exState.descriptionExo, g.exState.answer)
 	case matrToList:
 		g.e, g.exState.descriptionExo = initMatrToList(g.correctionMode, g.exState.descriptionExo, g.exState.answer)
+	case degreeGraph:
+		g.e, g.exState.descriptionExo, g.exState.descriptionQuestion = initDegreeGraph(g.correctionMode, g.exState.descriptionExo, g.exState.descriptionQuestion, g.exState.answer)
 	}
 
 	log.Print(g.exState.encode())
@@ -120,6 +123,8 @@ func getExTitlePerNum(exNum int) *ebiten.Image {
 		return titleListToMatrImage
 	case matrToList:
 		return titleMatrToListImage
+	case degreeGraph:
+		return titleDegreeGraphImage
 	}
 
 	return nil

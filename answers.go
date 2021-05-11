@@ -1,6 +1,8 @@
 package main
 
-import "github.com/hajimehoshi/ebiten/v2"
+import (
+	"github.com/hajimehoshi/ebiten/v2"
+)
 
 type answerSheet struct {
 	xposition int
@@ -8,6 +10,7 @@ type answerSheet struct {
 	aboveText *ebiten.Image
 	buttons   []button
 	clics     []int
+	numClics  *int
 }
 
 type button struct {
@@ -23,6 +26,8 @@ func (a *answerSheet) init(x, y int) {
 	a.yposition = y
 	a.buttons = make([]button, 0)
 	a.clics = make([]int, 0)
+	numClics := 0
+	a.numClics = &numClics
 }
 
 func (a *answerSheet) addButton(x, y int, content *ebiten.Image) {
@@ -60,6 +65,7 @@ func (b *button) isOver(x, y int) bool {
 func (a *answerSheet) clic(buttonID int) {
 	if buttonID >= 0 && buttonID < len(a.buttons) {
 		a.clics[buttonID]++
+		*(a.numClics)++
 	}
 }
 
@@ -67,6 +73,7 @@ func (a *answerSheet) resetClics() {
 	for i := range a.clics {
 		a.clics[i] = 0
 	}
+	*(a.numClics) = 0
 }
 
 func (a *answerSheet) draw(screen *ebiten.Image, buttonSelected int) {

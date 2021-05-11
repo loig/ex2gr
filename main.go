@@ -3,6 +3,8 @@ package main
 import (
 	"flag"
 	"log"
+	"math/rand"
+	"time"
 
 	"github.com/hajimehoshi/ebiten/v2"
 )
@@ -12,9 +14,9 @@ const (
 	windowHeight = 1448
 )
 
-// ajouter flag pour lire la seed
-
 func main() {
+
+	rand.Seed(time.Now().UnixNano())
 
 	restartPoint := flag.String("seed", "", "Utiliser pour reprendre sur un exercice donné.")
 	flag.Parse()

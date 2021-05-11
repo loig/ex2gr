@@ -202,6 +202,14 @@ var generalTitleImage *ebiten.Image
 var quitGameAsset []byte
 var quitGameImage *ebiten.Image
 
+//go:embed assets/ex-degreegraph.png
+var degreeGraphAsset []byte
+var degreeGraphImage *ebiten.Image // should maybe be created only when needed
+
+//go:embed assets/extitle-degreegraph.png
+var titleDegreeGraphAsset []byte
+var titleDegreeGraphImage *ebiten.Image // should maybe be created only when needed
+
 const spriteSide int = 64
 const menuSpriteSide int = 128
 
@@ -494,6 +502,18 @@ func loadAssets() {
 		log.Fatal(err)
 	}
 	quitGameImage = ebiten.NewImageFromImage(decodedAsset)
+
+	decodedAsset, _, err = image.Decode(bytes.NewReader(degreeGraphAsset))
+	if err != nil {
+		log.Fatal(err)
+	}
+	degreeGraphImage = ebiten.NewImageFromImage(decodedAsset)
+
+	decodedAsset, _, err = image.Decode(bytes.NewReader(titleDegreeGraphAsset))
+	if err != nil {
+		log.Fatal(err)
+	}
+	titleDegreeGraphImage = ebiten.NewImageFromImage(decodedAsset)
 }
 
 // split the graphElementsImage
