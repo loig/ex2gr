@@ -589,6 +589,19 @@ func (g *graph) drawNormalEdge(from, xto, yto int, screen *ebiten.Image, selecte
 		xto = g.nodes[toNode].xposition
 		yto = g.nodes[toNode].yposition
 	}
+	margin := spriteSide - 6
+	if toNode < 0 {
+		if xto < -margin {
+			xto = -margin
+		} else if xto > g.xsize+margin {
+			xto = g.xsize + margin
+		}
+		if yto < -margin {
+			yto = -margin
+		} else if yto > g.ysize+margin {
+			yto = g.ysize + margin
+		}
+	}
 	xTo := float64(xto + g.xposition)
 	yTo := float64(yto + g.yposition)
 	dx := xTo - xFrom
