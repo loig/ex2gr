@@ -210,6 +210,22 @@ var degreeGraphImage *ebiten.Image // should maybe be created only when needed
 var titleDegreeGraphAsset []byte
 var titleDegreeGraphImage *ebiten.Image // should maybe be created only when needed
 
+//go:embed assets/ex-degreematr.png
+var degreeMatrAsset []byte
+var degreeMatrImage *ebiten.Image // should maybe be created only when needed
+
+//go:embed assets/extitle-degreematr.png
+var titleDegreeMatrAsset []byte
+var titleDegreeMatrImage *ebiten.Image // should maybe be created only when needed
+
+//go:embed assets/ex-degreelist.png
+var degreeListAsset []byte
+var degreeListImage *ebiten.Image // should maybe be created only when needed
+
+//go:embed assets/extitle-degreelist.png
+var titleDegreeListAsset []byte
+var titleDegreeListImage *ebiten.Image // should maybe be created only when needed
+
 const spriteSide int = 64
 const menuSpriteSide int = 128
 
@@ -514,6 +530,30 @@ func loadAssets() {
 		log.Fatal(err)
 	}
 	titleDegreeGraphImage = ebiten.NewImageFromImage(decodedAsset)
+
+	decodedAsset, _, err = image.Decode(bytes.NewReader(degreeListAsset))
+	if err != nil {
+		log.Fatal(err)
+	}
+	degreeListImage = ebiten.NewImageFromImage(decodedAsset)
+
+	decodedAsset, _, err = image.Decode(bytes.NewReader(titleDegreeListAsset))
+	if err != nil {
+		log.Fatal(err)
+	}
+	titleDegreeListImage = ebiten.NewImageFromImage(decodedAsset)
+
+	decodedAsset, _, err = image.Decode(bytes.NewReader(degreeMatrAsset))
+	if err != nil {
+		log.Fatal(err)
+	}
+	degreeMatrImage = ebiten.NewImageFromImage(decodedAsset)
+
+	decodedAsset, _, err = image.Decode(bytes.NewReader(titleDegreeMatrAsset))
+	if err != nil {
+		log.Fatal(err)
+	}
+	titleDegreeMatrImage = ebiten.NewImageFromImage(decodedAsset)
 }
 
 // split the graphElementsImage
