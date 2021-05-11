@@ -46,7 +46,7 @@ const (
 	menuHeight     = (globalNumExo/menuColumns+1)*(menuSpriteSide+menuSpace) - menuSpace
 	menuXPos       = (windowWidth - menuWidth) / 2
 	menuYPos       = 300
-	menuTitleSpace = 50
+	menuTitleSpace = 75
 )
 
 func (g *game) drawMenu(screen *ebiten.Image, selectedEx int) {
@@ -92,7 +92,7 @@ func (m *MenuInfo) drawSelectedEx(screen *ebiten.Image, sel int) {
 		if titleImage != nil {
 			xsize, ysize = titleImage.Size()
 			options := ebiten.DrawImageOptions{}
-			options.GeoM.Translate(float64((windowWidth-xsize)/2), float64(menuYPos+menuHeight+menuTitleSpace))
+			options.GeoM.Translate(float64(menuXPos), float64(menuYPos+menuHeight+menuTitleSpace))
 			screen.DrawImage(
 				titleImage,
 				&options,
