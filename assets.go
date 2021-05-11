@@ -198,6 +198,10 @@ var questionImage *ebiten.Image
 var generalTitleAsset []byte
 var generalTitleImage *ebiten.Image
 
+//go:embed assets/qsuivante.png
+var quitGameAsset []byte
+var quitGameImage *ebiten.Image
+
 const spriteSide int = 64
 const menuSpriteSide int = 128
 
@@ -484,6 +488,12 @@ func loadAssets() {
 		log.Fatal(err)
 	}
 	generalTitleImage = ebiten.NewImageFromImage(decodedAsset)
+
+	decodedAsset, _, err = image.Decode(bytes.NewReader(quitGameAsset))
+	if err != nil {
+		log.Fatal(err)
+	}
+	quitGameImage = ebiten.NewImageFromImage(decodedAsset)
 }
 
 // split the graphElementsImage

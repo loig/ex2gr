@@ -1,14 +1,42 @@
 package main
 
 import (
+	"encoding/json"
 	"image"
+	"io/ioutil"
+	"log"
 
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
-type menuInfo struct {
-	exoDone  [globalNumExo]bool
-	exoTried [globalNumExo]int
+type MenuInfo struct {
+	ExoDone  [globalNumExo]bool
+	ExoTried [globalNumExo]int
+}
+
+func (m *MenuInfo) init(saveFile string) {
+
+	b, err := ioutil.ReadFile(saveFile)
+	if err != nil {
+		return
+	}
+
+	err = json.Unmarshal(b, &m)
+	if err != nil {
+		log.Panic("Impossible de récupérer les données du fichier ", saveFile)
+	}
+}
+
+func (m *MenuInfo) save(saveFile string) {
+	b, err := json.Marshal(*m)
+	if err != nil {
+		log.Panic("Impossible de préparer les données pour écriture dans le fichier ", saveFile)
+	}
+
+	err = ioutil.WriteFile(saveFile, b, 0644)
+	if err != nil {
+		log.Panic("Impossible d'écrire les données dans le fichier ", saveFile)
+	}
 }
 
 const (
@@ -27,11 +55,11 @@ func (g *game) drawMenu(screen *ebiten.Image, selectedEx int) {
 
 	for i := 0; i < globalNumExo; i++ {
 		sprite := menuExSubimage
-		if g.menu.exoDone[i] {
+		if g.menu.ExoDone[i] {
 			sprite = menuExDoneSubimage
 		}
 		if i == selectedEx {
-			if g.menu.exoDone[i] {
+			if g.menu.ExoDone[i] {
 				sprite = menuExDoneSelectedSubimage
 			} else {
 				sprite = menuExSelectedSubimage
@@ -45,7 +73,7 @@ func (g *game) drawMenu(screen *ebiten.Image, selectedEx int) {
 			menuElementsImage.SubImage(sprite).(*ebiten.Image),
 			&options,
 		)
-		if g.menu.exoDone[i] {
+		if g.menu.ExoDone[i] {
 			screen.DrawImage(
 				menuElementsImage.SubImage(menuDoneMarkSubimage).(*ebiten.Image),
 				&options,
@@ -55,7 +83,7 @@ func (g *game) drawMenu(screen *ebiten.Image, selectedEx int) {
 	g.menu.drawSelectedEx(screen, selectedEx)
 }
 
-func (m *menuInfo) drawSelectedEx(screen *ebiten.Image, sel int) {
+func (m *MenuInfo) drawSelectedEx(screen *ebiten.Image, sel int) {
 
 	if sel >= 0 && sel < globalNumExo {
 		var xsize, ysize int
@@ -78,7 +106,7 @@ func (m *menuInfo) drawSelectedEx(screen *ebiten.Image, sel int) {
 			&options,
 		)
 
-		tries := m.exoTried[sel]
+		tries := m.ExoTried[sel]
 		digits := make([]int, 0)
 		if tries == 0 {
 			digits = append(digits, 0)
@@ -105,7 +133,7 @@ func (m *menuInfo) drawSelectedEx(screen *ebiten.Image, sel int) {
 		)
 		options.GeoM.Translate(float64(menuSpriteSide), 0)
 		sprite := nonImage
-		if m.exoDone[sel] {
+		if m.ExoDone[sel] {
 			sprite = ouiImage
 		}
 		screen.DrawImage(
@@ -128,7 +156,7 @@ func (g *game) getNextUndoneID(lastID int) int {
 	resID := lastID
 	for i := 0; i < globalNumExo; i++ {
 		resID = (resID + 1) % globalNumExo
-		if !g.menu.exoDone[resID] {
+		if !g.menu.ExoDone[resID] {
 			return resID
 		}
 	}

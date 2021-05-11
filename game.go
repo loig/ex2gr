@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"image/color"
 	"log"
 
@@ -21,12 +22,16 @@ type game struct {
 	exState              stateDescription
 	inMenu               bool
 	goToMenu             bool
-	menu                 menuInfo
+	menu                 MenuInfo
 	menuItemSelected     int
 	lastMenuItemSelected int
+	quitGame             answerSheet
+	quitGameSelected     int
+	quitGameLastSelected int
+	saveFile             string
 }
 
-func (g *game) init(code string) {
+func (g *game) init(code string, saveFile string) {
 	g.goToNextEx.init(0, windowHeight-200)
 	g.goToNextQ.init(0, windowHeight-200)
 	xshift, _ := suivantImage.Size()
@@ -34,10 +39,15 @@ func (g *game) init(code string) {
 	g.goToNextEx.addButton((windowWidth-xshift)/2+200, 0, menuImage)
 	xshift, _ = questionImage.Size()
 	g.goToNextQ.addButton((windowWidth-xshift)/2, 0, questionImage)
+	xshift, _ = quitGameImage.Size()
+	g.quitGame.init(0, windowHeight-200)
+	g.quitGame.addButton((windowWidth-xshift)/2, 0, quitGameImage)
 	g.onClicNextButton = -1
 	g.selectedNextButton = -1
 	g.menuItemSelected = -1
 	g.lastMenuItemSelected = -1
+	g.quitGameSelected = -1
+	g.quitGameLastSelected = -1
 	g.inMenu = true
 	if code != "" {
 		g.inMenu = false
@@ -46,6 +56,8 @@ func (g *game) init(code string) {
 		g.exState.decode(code)
 		g.initExo(g.exState.numExo)
 	}
+	g.saveFile = saveFile
+	g.menu.init(g.saveFile)
 }
 
 func (g *game) reset() {
@@ -59,6 +71,9 @@ func (g *game) reset() {
 	g.goToMenu = false
 	g.goToNextEx.resetClics()
 	g.goToNextQ.resetClics()
+	g.quitGame.resetClics()
+	g.quitGameSelected = -1
+	g.quitGameLastSelected = -1
 }
 
 func (g *game) Update() error {
@@ -71,18 +86,26 @@ func (g *game) Update() error {
 
 	if g.inMenu {
 		g.menuItemSelected = g.checkAboveMenuEx(x, y)
+		g.quitGameSelected = g.quitGame.selectButton(x, y)
 		if inpututil.IsMouseButtonJustReleased(ebiten.MouseButtonLeft) {
 			if g.menuItemSelected >= 0 && g.menuItemSelected < globalNumExo && g.menuItemSelected == g.lastMenuItemSelected {
-				g.menu.exoTried[g.menuItemSelected]++
+				g.menu.ExoTried[g.menuItemSelected]++
 				g.initExo(g.menuItemSelected)
 				g.reset()
-			} else {
-				g.lastMenuItemSelected = g.menuItemSelected
+			} else if g.quitGameSelected == g.quitGameLastSelected {
+				g.quitGame.clic(g.quitGameSelected)
+				if g.quitGame.clics[0] > 0 {
+					g.menu.save(g.saveFile)
+					return errors.New("Done")
+				}
 			}
+			g.lastMenuItemSelected = -1
+			g.menuItemSelected = -1
 			return nil
 		}
 		if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
 			g.lastMenuItemSelected = g.menuItemSelected
+			g.quitGameLastSelected = g.quitGameSelected
 		}
 		return nil
 	}
@@ -98,7 +121,7 @@ func (g *game) Update() error {
 				g.goToNextQ.aboveText = bravoImage
 			} else {
 				g.succesfulStrike = 0
-				g.menu.exoTried[g.e.id]++
+				g.menu.ExoTried[g.e.id]++
 				g.goToNextQ.aboveText = rateImage
 			}
 			g.goToNextEx.aboveText = g.goToNextQ.aboveText
@@ -113,11 +136,11 @@ func (g *game) Update() error {
 			// This is where counting of succes and so should be done
 			currentID := g.e.id
 			if g.succesfulStrike >= g.e.successRequired {
-				g.menu.exoDone[currentID] = true
+				g.menu.ExoDone[currentID] = true
 				if !g.goToMenu {
 					currentID = g.getNextUndoneID(currentID)
 					if currentID >= 0 {
-						g.menu.exoTried[currentID]++
+						g.menu.ExoTried[currentID]++
 					} else {
 						g.goToMenu = true
 					}
@@ -160,6 +183,7 @@ func (g *game) Draw(screen *ebiten.Image) {
 
 	if g.inMenu && !g.correctionMode {
 		g.drawMenu(screen, g.menuItemSelected)
+		g.quitGame.draw(screen, g.quitGameSelected)
 		return
 	}
 

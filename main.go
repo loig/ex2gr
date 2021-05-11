@@ -18,6 +18,7 @@ func main() {
 
 	restartPoint := flag.String("seed", "", "Utiliser pour reprendre sur un exercice donné.")
 	flag.Parse()
+	saveFile := flag.String("sauvegarde", "ex2grSave.json", "Utiliser pour changer le fichier de sauvegarde")
 
 	ebiten.SetWindowTitle("ex2gr : exercices de graphes")
 	ebiten.SetWindowResizable(true)
@@ -26,7 +27,7 @@ func main() {
 	loadAssets()
 
 	g := game{}
-	g.init(*restartPoint)
+	g.init(*restartPoint, *saveFile)
 
 	err := ebiten.RunGame(&g)
 	log.Print(err)
