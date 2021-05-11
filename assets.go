@@ -198,7 +198,7 @@ var questionImage *ebiten.Image
 var generalTitleAsset []byte
 var generalTitleImage *ebiten.Image
 
-//go:embed assets/qsuivante.png
+//go:embed assets/quit.png
 var quitGameAsset []byte
 var quitGameImage *ebiten.Image
 
