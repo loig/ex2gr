@@ -2,9 +2,12 @@ package main
 
 import (
 	"fmt"
+	"image"
 	"log"
 	"strconv"
 	"strings"
+
+	"github.com/hajimehoshi/ebiten/v2"
 )
 
 type stateDescription struct {
@@ -157,4 +160,27 @@ func decodeFromToQuestion(code, numNodes int) (from, to int) {
 	from = code / 16
 	to = code % 16
 	return from, to
+}
+
+func (g *game) drawSeed(screen *ebiten.Image) {
+	options := &ebiten.DrawImageOptions{}
+	options.GeoM.Translate(5, 0)
+	for _, c := range g.encodedExState {
+		if c <= 'f' && c >= 'a' {
+			options.GeoM.Translate(0, float64(-spriteSide/8))
+			x := int(c - 97)
+			screen.DrawImage(graphElementsImage.SubImage(image.Rect(x*spriteSide, spriteSide, (x+1)*spriteSide, 2*spriteSide)).(*ebiten.Image), options)
+			options.GeoM.Translate(0, float64(+spriteSide/8))
+		} else if c <= '9' && c >= '0' {
+			options.GeoM.Translate(float64(spriteSide/4), float64(-spriteSide/4))
+			v := int(c - 48)
+			x := v % 6
+			y := v / 6
+			screen.DrawImage(menuElementsImage.SubImage(image.Rect(x*spriteSide, y*spriteSide+menuSpriteSide, (x+1)*spriteSide, (y+1)*spriteSide+menuSpriteSide)).(*ebiten.Image), options)
+			options.GeoM.Translate(-float64(spriteSide/4), float64(spriteSide/4))
+		} else if c == '.' {
+			screen.DrawImage(graphElementsImage.SubImage(undoneQuestionSubimage).(*ebiten.Image), options)
+		}
+		options.GeoM.Translate(float64(spriteSide/2-10), 0)
+	}
 }

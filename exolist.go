@@ -86,7 +86,8 @@ func (g *game) initExo(exNum int) {
 		g.e, g.exState.descriptionExo, g.exState.descriptionQuestion = initDegreeMatr(g.correctionMode, g.exState.descriptionExo, g.exState.descriptionQuestion, g.exState.answer)
 	}
 
-	log.Print(g.exState.encode())
+	g.encodedExState = g.exState.encode()
+	log.Print("Début de question, le code est : ", g.encodedExState)
 
 }
 

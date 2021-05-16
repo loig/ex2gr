@@ -20,6 +20,7 @@ type game struct {
 	succesfulStrike      int
 	correctionMode       bool
 	exState              stateDescription
+	encodedExState       string
 	inMenu               bool
 	goToMenu             bool
 	menu                 MenuInfo
@@ -115,7 +116,8 @@ func (g *game) Update() error {
 		if g.e.done {
 			g.exoDone = true
 			g.exState.answer = g.e.codeAnswer()
-			log.Print(g.exState.encode())
+			g.encodedExState = g.exState.encode()
+			log.Print("Fin de question, le code est : ", g.encodedExState)
 			if g.e.correct {
 				g.succesfulStrike++
 				g.goToNextQ.aboveText = bravoImage
@@ -186,6 +188,8 @@ func (g *game) Draw(screen *ebiten.Image) {
 		g.quitGame.draw(screen, g.quitGameSelected)
 		return
 	}
+
+	g.drawSeed(screen)
 
 	g.e.draw(screen, g.correctionMode)
 
