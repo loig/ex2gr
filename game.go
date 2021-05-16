@@ -97,7 +97,7 @@ func (g *game) Update() error {
 				g.quitGame.clic(g.quitGameSelected)
 				if g.quitGame.clics[0] > 0 {
 					g.menu.save(g.saveFile)
-					return errors.New("Done")
+					return errors.New("Au revoir")
 				}
 			}
 			g.lastMenuItemSelected = -1

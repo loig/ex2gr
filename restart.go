@@ -148,14 +148,14 @@ func (g *graph) decodeList(code int, numNodes int) {
 
 func encodeFromToQuestion(from, to, numNodes int) (code int) {
 	if numNodes > 16 {
-		log.Fatal("impossible de traiter un cas à plus de 16 sommets")
+		log.Fatal("Impossible de traiter un cas à plus de 16 sommets")
 	}
 	return to + 16*from
 }
 
 func decodeFromToQuestion(code, numNodes int) (from, to int) {
 	if numNodes > 16 {
-		log.Fatal("impossible de traiter un cas à plus de 16 sommets")
+		log.Fatal("Impossible de traiter un cas à plus de 16 sommets")
 	}
 	from = code / 16
 	to = code % 16

@@ -37,6 +37,8 @@ func (m *MenuInfo) save(saveFile string) {
 	if err != nil {
 		log.Panic("Impossible d'écrire les données dans le fichier ", saveFile)
 	}
+
+	log.Print("Les données ont été enregistrées dans le fichier ", saveFile)
 }
 
 const (
