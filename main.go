@@ -19,8 +19,8 @@ func main() {
 	rand.Seed(time.Now().UnixNano())
 
 	restartPoint := flag.String("seed", "", "Utiliser pour reprendre sur un exercice donné.")
-	flag.Parse()
 	saveFile := flag.String("sauvegarde", "ex2grSave.json", "Utiliser pour changer le fichier de sauvegarde")
+	flag.Parse()
 
 	ebiten.SetWindowTitle("ex2gr : exercices de graphes")
 	ebiten.SetWindowResizable(true)

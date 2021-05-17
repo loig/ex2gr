@@ -19,3 +19,8 @@ assets/*.png~
 assets/*.kra
 assets/*.kra~
 ex2grSave.json
+doc/*.aux
+doc/*.f*
+doc/*.pdf
+doc/*.log
+doc/*.synctex*
